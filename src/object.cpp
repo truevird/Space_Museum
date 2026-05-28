@@ -121,8 +121,6 @@ void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     glm::mat4 earthModel = parentModel;
     earthModel = glm::rotate(earthModel, time * 1.0f, glm::vec3(0.0f, 1.0f, 0.0f)); // 태양 기준 공전
     earthModel = glm::translate(earthModel, glm::vec3(7.0f, 0.0f, 0.0f));           // 태양과의 거리
-
-    // ⭐ 기존 구조체의 draw를 호출하면서 계산된 위치(earthModel)를 넘겨줍니다.
     earthMoon->draw(shader, time, earthModel);
 
     // 5. 화성
@@ -200,7 +198,7 @@ void satellite::draw(Shader& shader, glm::mat4 parentModel) {
     // 2. 태양광 패널 (Solar Panels)
     glBindTexture(GL_TEXTURE_2D, solarTex);
 
-    // 반복되던 좌우 패널 배치를 배열과 반복문으로 깔끔하게 최적화
+    //패널을 반복문으로 생성
     float panelXPositions[] = { 1.5f, 2.6f, 3.7f, -1.5f, -2.6f, -3.7f };
     for (float xPos : panelXPositions) {
         model = parentModel;

@@ -28,7 +28,7 @@ public:
     glm::mat4 GetViewMatrix() {
         return glm::lookAt(Position, Position + Front, Up);
     }
-
+    //이동
     void ProcessKeyboard(int direction, float deltaTime) {
         float velocity = MovementSpeed * deltaTime;
         if (direction == 0) Position += Front * velocity; // W
@@ -38,7 +38,7 @@ public:
         if (direction == 4) Position += Up * velocity; // SPACE
         if (direction == 5) Position -= Up * velocity; // LCTRL
     }
-
+    // 시점 전환
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) {
         xoffset *= MouseSensitivity;
         yoffset *= MouseSensitivity;
@@ -52,7 +52,7 @@ public:
         }
         updateCameraVectors();
     }
-
+    //확대 축소
     void ProcessMouseScroll(float yoffset) {
         Zoom -= (float)yoffset;
         if (Zoom < 1.0f) Zoom = 1.0f;

@@ -79,7 +79,7 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    // 셰이더 빌드 (경로는 실행 파일 기준)
+    // 셰이더 빌드 
     Shader shaderProgram("shaders/shader.vert", "shaders/shader.frag");
 
     // 메쉬 로드
@@ -91,7 +91,7 @@ int main() {
     Mesh ringMesh = createRingMesh();
     Mesh antennaMesh = createAntennaMesh();
 
-    // 텍스처 로드 (경로는 실행 파일 기준)
+    // 텍스처 로드 
     unsigned int floorTex = loadTexture("textures/floor2.jpg");
     unsigned int sunTex = loadTexture("textures/sun.jpg", true);
     unsigned int mercuryTex = loadTexture("textures/mercury.jpg", true);
@@ -107,10 +107,12 @@ int main() {
     unsigned int wall2Tex = loadTexture("textures/wall2.jpg");
     unsigned int sattTex = loadTexture("textures/satellitebody.jpg");
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
+
+    //구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
     SolarSystem solarSystem(sphereMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
     Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
-    satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wall2Tex);
+    satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wall2Tex);//안테나 텍스쳐 추가 필요
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -136,7 +138,7 @@ int main() {
         model = glm::scale(model, glm::vec3(3.0f, 1.0f, 3.0f));
         myStage.draw(shaderProgram, model);
 
-       
+       //태양계
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(15.0f, 3.0f, -5.0f));
         model = glm::rotate(model, (float)glfwGetTime() * 0.2f, glm::vec3(0.0f, 1.0f, 0.0f)); // 공전도 메인에서 제어 가능
@@ -170,7 +172,7 @@ int main() {
         shaderProgram.setMat4("model", model);
         ringMesh.draw();
         */
-
+        //인공위성
         model = glm::mat4(1.0f);
         satelliteMesh.draw(shaderProgram, model);
 

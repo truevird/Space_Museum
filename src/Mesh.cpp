@@ -24,7 +24,7 @@ void Mesh::draw() const {
     }
     glBindVertexArray(0);
 }
-
+//평면 메쉬
 Mesh createFloorMesh() {
     float floorVertices[] = {
         -10.0f, 0.0f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  10.0f,
@@ -45,7 +45,7 @@ Mesh createFloorMesh() {
     setMeshAttributes();
     return mesh;
 }
-
+//정육면체 메쉬
 Mesh createCubeMesh() {
     float cube_vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -54,7 +54,6 @@ Mesh createCubeMesh() {
          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-        // ... (생략 방지를 위해 원본의 모든 cube 정점 데이터를 넣어주세요)
          -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,
          0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 0.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f,
@@ -97,7 +96,7 @@ Mesh createCubeMesh() {
     setMeshAttributes();
     return mesh;
 }
-
+//구 메쉬
 Mesh createSphereMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -143,6 +142,7 @@ Mesh createSphereMesh() {
     setMeshAttributes();
     return mesh;
 }
+//원기둥 메쉬
 Mesh createCylinderMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -225,6 +225,7 @@ Mesh createCylinderMesh() {
 
     return mesh;
 }
+//원뿔 메쉬
 Mesh createConeMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -286,7 +287,7 @@ Mesh createConeMesh() {
 
     return mesh;
 }
-
+//고리 메쉬
 Mesh createRingMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -343,7 +344,7 @@ Mesh createRingMesh() {
 
     return mesh;
 }
-
+//반구 메쉬
 Mesh createAntennaMesh() {
     Mesh mesh;
     std::vector<float> vertices;

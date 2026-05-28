@@ -13,22 +13,22 @@ include_directories(libs/glfw/include)
 include_directories(libs/glm)
 include_directories(libs/stb_image)
 
-# 2. 컴파일할 소스 파일 목록 (glad.c의 경로가 변경됨)
+# 2. 컴파일할 소스 파일 목록을 SOURCE에 저장
 set(SOURCES
     src/main.cpp
     src/Mesh.cpp
     src/object.cpp
     src/stb_image.cpp
-    libs/glad/src/glad.c  # glad 소스 코드를 직접 컴파일에 포함
+    libs/glad/src/glad.c
 )
 
-add_executable(Space_Museum ${SOURCES})
+add_executable(Space_Museum ${SOURCES})#생성할 실행파일 이름 + 컴파일할 소스 파일 목록 -> 생성
 
 # ---------------------------------------------------------------------
-#GLFW 라이브러리 파일 경로 지정
+#GLFW 라이브러리 파일 경로 지정(vs2022)
 set(GLFW_LIB_DIR "${CMAKE_SOURCE_DIR}/libs/glfw/lib-vc2022")
 
-# 해당 폴더 안의 정적 라이브러리 파일(glfw3.lib)의 절대 경로를 변수에 담습니다.
+# 해당 폴더 안의 정적 라이브러리 파일(glfw3.lib)의 절대 경로 지정
 set(GLFW_LIBRARY "${GLFW_LIB_DIR}/glfw3.lib") 
 # ---------------------------------------------------------------------
 
@@ -37,7 +37,6 @@ set(GLFW_LIBRARY "${GLFW_LIB_DIR}/glfw3.lib")
 find_package(OpenGL REQUIRED)
 
 # 내가 폴더에 넣은 glfw3와 OS의 OpenGL을 내 프로젝트에 연결
-# (Windows 환경이라면 glfw3 대신 glfw3.lib의 이름에 맞춰 적어주세요. 예: glfw3dll, glfw3_mt 등)
 target_link_libraries(Space_Museum PRIVATE ${GLFW_LIBRARY} OpenGL::GL)
 
 # 5. 에셋 복사 (bin 폴더 안의 shaders와 textures를 bin/Debug 폴더로 복사)
