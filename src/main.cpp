@@ -92,7 +92,7 @@ int main() {
     Mesh antennaMesh = createAntennaMesh();
 
     // 텍스처 로드 
-    unsigned int floorTex = loadTexture("textures/floor2.jpg");
+    unsigned int floorTex = loadTexture("textures/floor.jpg");
     unsigned int sunTex = loadTexture("textures/sun.jpg", true);
     unsigned int mercuryTex = loadTexture("textures/mercury.jpg", true);
     unsigned int venusTex = loadTexture("textures/venus.jpg", true);
@@ -103,8 +103,8 @@ int main() {
     unsigned int neptuneTex = loadTexture("textures/neptune.jpg", true);
     unsigned int earthTex = loadTexture("textures/earth.jpg", false,true);
     unsigned int moonTex = loadTexture("textures/moon.jpg");
-    unsigned int wallTex = loadTexture("textures/wall2.jpg");
-    unsigned int wall2Tex = loadTexture("textures/wall2.jpg");
+    unsigned int wallTex = loadTexture("textures/wall.jpg");
+    unsigned int spaceTex = loadTexture("textures/space.jpg");
     unsigned int sattTex = loadTexture("textures/satellitebody.jpg");
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
 
@@ -112,7 +112,8 @@ int main() {
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
     SolarSystem solarSystem(sphereMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
     Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
-    satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wall2Tex);//안테나 텍스쳐 추가 필요
+    SmallExhibit smStage(cubeMesh, spaceTex);
+    satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -135,14 +136,38 @@ int main() {
         glm::mat4 model;
         //전시장
         model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(3.0f, 1.0f, 3.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 1.8f, 3.0f));
         myStage.draw(shaderProgram, model);
+
+        //작은 전시장
+        //태양 전시관
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(15.0f, 1.8f, -15.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        smStage.draw(shaderProgram, model);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(15.0f, 1.8f, 15.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        smStage.draw(shaderProgram, model);
+
+        //인공위성 전시관
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, -15.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        smStage.draw(shaderProgram, model);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, 15.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        smStage.draw(shaderProgram, model);
+
 
        //태양계
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(15.0f, 3.0f, -5.0f));
+        model = glm::translate(model, glm::vec3(15.0f, 1.0f, -15.0f));
         model = glm::rotate(model, (float)glfwGetTime() * 0.2f, glm::vec3(0.0f, 1.0f, 0.0f)); // 공전도 메인에서 제어 가능
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
         solarSystem.draw(shaderProgram, (float)glfwGetTime(), model);
 
        /*
@@ -174,6 +199,7 @@ int main() {
         */
         //인공위성
         model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-15.0f, 1.0f, -15.0f));
         satelliteMesh.draw(shaderProgram, model);
 
         glfwSwapBuffers(window);

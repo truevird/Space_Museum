@@ -17,6 +17,15 @@ struct Stage {
     Stage(Mesh& fMesh, Mesh& cMesh, unsigned int fTex, unsigned int wTex);
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
+
+struct SmallExhibit {
+    Mesh* cubeMesh;
+    unsigned int wallTex;
+
+    SmallExhibit(Mesh& cMesh, unsigned int wTex);
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
+
 // 2.지구 달 구조체
 struct EarthMoonSystem {
     Mesh* sphereMesh;
