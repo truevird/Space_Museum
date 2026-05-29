@@ -20,11 +20,31 @@ struct Stage {
 
 struct SmallExhibit {
     Mesh* cubeMesh;
-    unsigned int wallTex;
+    unsigned int innerTex;  // 안쪽 텍스처
+    unsigned int outerTex;  // 바깥쪽 텍스처
 
-    SmallExhibit(Mesh& cMesh, unsigned int wTex);
+    SmallExhibit(Mesh& cMesh, unsigned int iTex, unsigned int oTex);
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
+struct EarthExhibit {
+    Mesh* cubeMesh;
+    unsigned int innerTex;  // 안쪽 텍스처
+    unsigned int outerTex;
+    unsigned int floorTex;  // 바깥쪽 텍스처
+
+    EarthExhibit(Mesh& cMesh, unsigned int iTex, unsigned int fTex, unsigned int oTex);
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
+struct MarsExhibit {
+    Mesh* cubeMesh;
+    unsigned int innerTex;  // 안쪽 텍스처
+    unsigned int outerTex;
+    unsigned int floorTex;  // 바깥쪽 텍스처
+
+    MarsExhibit(Mesh& cMesh, unsigned int iTex, unsigned int fTex, unsigned int oTex);
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
+
 
 // 2.지구 달 구조체
 struct EarthMoonSystem {

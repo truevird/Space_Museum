@@ -112,7 +112,9 @@ int main() {
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
     SolarSystem solarSystem(sphereMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
     Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
-    SmallExhibit smStage(cubeMesh, spaceTex);
+    SmallExhibit smStage(cubeMesh, spaceTex, wallTex);
+    EarthExhibit earthStage(cubeMesh, spaceTex, earthTex,  wallTex);
+    MarsExhibit marsStage(cubeMesh, spaceTex, marsTex, wallTex);
     satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -155,12 +157,12 @@ int main() {
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, 1.8f, -15.0f));
         model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        smStage.draw(shaderProgram, model);
-
+        earthStage.draw(shaderProgram, model);
+        //화성 바닥
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, 1.8f, 15.0f));
         model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        smStage.draw(shaderProgram, model);
+        marsStage.draw(shaderProgram, model);
 
 
        //태양계
@@ -199,7 +201,7 @@ int main() {
         */
         //인공위성
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 1.0f, -15.0f));
+        model = glm::translate(model, glm::vec3(-15.0f, 0.5f, -15.0f));
         satelliteMesh.draw(shaderProgram, model);
 
         glfwSwapBuffers(window);
