@@ -815,4 +815,153 @@ void MarsExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     glCullFace(GL_BACK);  // 기본값 복구
 }
 
+// ==========================================
+// 화성탐사로봇 구현
+// ==========================================
 
+MarsRover::MarsRover(
+    Mesh& cuMesh, Mesh& cyMesh, Mesh& spMesh, unsigned int bTex, unsigned int wTex, unsigned int dTex
+) : cubeMesh(&cuMesh), cylinderMesh(&cyMesh), sphereMesh(&spMesh), bodyTex(bTex), wheelTex(wTex), darkTex(dTex) {
+}
+
+void MarsRover::draw(Shader& shader, float time, glm::mat4 parentModel) {
+    glm::mat4 model;
+
+    // 로버 전체 기준 위치
+    glm::mat4 roverBase = parentModel;
+    roverBase = glm::translate(roverBase, glm::vec3(0.0f, 0.15f, 0.0f));
+
+    // 1. 본체
+
+    glBindTexture(GL_TEXTURE_2D, bodyTex);
+    model = roverBase;
+    model = glm::translate(model, glm::vec3(0.0f, 0.35f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.8f, 0.25f, 1.2f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    glBindTexture(GL_TEXTURE_2D, darkTex);
+    model = roverBase;
+    model = glm::translate(model, glm::vec3(0.1f, 0.48f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.5f, 0.04f, 1.0f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    model = roverBase;
+    model = glm::translate(model, glm::vec3(0.95f, 0.28f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.8f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    // 2. 카메라 마스트
+
+    glBindTexture(GL_TEXTURE_2D, darkTex);
+    model = roverBase;
+    model = glm::translate(model, glm::vec3(0.6f, 0.5f, -0.4f));
+    model = glm::scale(model, glm::vec3(0.06f, 0.6f, 0.06f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    float scanAngle = sin(time * 1.5f) * glm::radians(60.0f);
+    glm::mat4 headBase = roverBase;
+    headBase = glm::translate(headBase, glm::vec3(0.6f, 1.1f, -0.4f));
+    headBase = glm::rotate(headBase, scanAngle, glm::vec3(0, 1, 0));
+
+    glBindTexture(GL_TEXTURE_2D, bodyTex);
+    model = headBase;
+    model = glm::translate(model, glm::vec3(0.0f, 0.1f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.35f, 0.18f, 0.45f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    glBindTexture(GL_TEXTURE_2D, darkTex);
+    model = headBase;
+    model = glm::translate(model, glm::vec3(0.175f, 0.1f, -0.1f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 0, 1));
+    model = glm::scale(model, glm::vec3(0.08f, 0.05f, 0.08f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    model = headBase;
+    model = glm::translate(model, glm::vec3(0.175f, 0.1f, 0.1f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 0, 1));
+    model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    // 3. 로봇 팔 및 드릴
+
+    float armBreathe = sin(time * 2.0f) * glm::radians(5.0f);
+    glm::mat4 armBase = roverBase;
+    armBase = glm::translate(armBase, glm::vec3(0.9f, 0.35f, 0.0f));
+    armBase = glm::rotate(armBase, armBreathe, glm::vec3(0, 0, 1));
+
+    glBindTexture(GL_TEXTURE_2D, bodyTex);
+    glm::mat4 arm1 = armBase;
+    arm1 = glm::rotate(arm1, glm::radians(20.0f), glm::vec3(0, 0, 1));
+    model = arm1;
+    model = glm::translate(model, glm::vec3(0.3f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.6f, 0.06f, 0.06f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    glm::mat4 arm2 = arm1;
+    arm2 = glm::translate(arm2, glm::vec3(0.6f, 0.0f, 0.0f));
+    arm2 = glm::rotate(arm2, glm::radians(-70.0f), glm::vec3(0, 0, 1));
+    model = arm2;
+    model = glm::translate(model, glm::vec3(0.25f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.5f, 0.05f, 0.05f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    glm::mat4 drill = arm2;
+    drill = glm::translate(drill, glm::vec3(0.5f, 0.0f, 0.0f));
+    model = drill;
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 0, 1));
+    model = glm::translate(model, glm::vec3(0.0f, -0.15f, 0.0f));
+    model = glm::rotate(model, time * 10.0f, glm::vec3(0, 1, 0));
+    model = glm::scale(model, glm::vec3(0.05f, 0.2f, 0.05f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    // 4. 서스펜션 및 바퀴
+
+    float wheelX[] = { 0.8f, 0.0f, -0.8f };
+    float wheelZ[] = { 0.75f, -0.75f };
+
+    for (int j = 0; j < 2; j++) {
+        float z = wheelZ[j];
+
+        // 측면 메인 프레임
+        glBindTexture(GL_TEXTURE_2D, darkTex);
+        model = roverBase;
+        model = glm::translate(model, glm::vec3(0.0f, 0.35f, z * 0.7f));
+        model = glm::scale(model, glm::vec3(1.7f, 0.08f, 0.08f));
+        shader.setMat4("model", model);
+        cubeMesh->draw();
+
+        for (int i = 0; i < 3; i++) {
+            float x = wheelX[i];
+
+            // 수직 프레임
+            glBindTexture(GL_TEXTURE_2D, darkTex);
+            model = roverBase;
+            model = glm::translate(model, glm::vec3(x, 0.175f, z * 0.7f));
+            model = glm::scale(model, glm::vec3(0.05f, 0.35f, 0.05f));
+            shader.setMat4("model", model);
+            cubeMesh->draw();
+
+            // 타이어
+            glm::mat4 wheelBase = roverBase;
+            wheelBase = glm::translate(wheelBase, glm::vec3(x, 0.0f, z - 0.15f));
+            wheelBase = glm::rotate(wheelBase, time * 1.5f, glm::vec3(0, 0, 1));
+            wheelBase = glm::rotate(wheelBase, glm::radians(90.0f), glm::vec3(1, 0, 0));
+
+            glBindTexture(GL_TEXTURE_2D, wheelTex);
+            model = wheelBase;
+            model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+            shader.setMat4("model", model);
+            cylinderMesh->draw();
+        }
+    }
+}

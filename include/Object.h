@@ -87,5 +87,30 @@ struct satellite {
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
+// 5.화성탐사로봇
+struct MarsRover {
+    Mesh* cubeMesh;
+    Mesh* cylinderMesh;
+    Mesh* sphereMesh;
+
+    unsigned int bodyTex;
+    unsigned int wheelTex;
+    unsigned int darkTex;
+
+    MarsRover(
+        Mesh& cuMesh,
+        Mesh& cyMesh,
+        Mesh& spMesh,
+        unsigned int bTex,
+        unsigned int wTex,
+        unsigned int dTex
+    );
+
+    void draw(
+        Shader& shader,
+        float time,
+        glm::mat4 parentModel = glm::mat4(1.0f)
+    );
+};
 
 #endif

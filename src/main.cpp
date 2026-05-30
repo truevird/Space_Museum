@@ -116,6 +116,7 @@ int main() {
     EarthExhibit earthStage(cubeMesh, spaceTex, earthTex,  wallTex);
     MarsExhibit marsStage(cubeMesh, spaceTex, marsTex, wallTex);
     satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
+    MarsRover rover(cubeMesh, cylinderMesh, sphereMesh, sattTex, wallTex, spaceTex);
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -203,6 +204,13 @@ int main() {
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, 0.5f, -15.0f));
         satelliteMesh.draw(shaderProgram, model);
+
+        // 화성 탐사 로봇
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-15.0f, -1.7f, 15.0f));
+        model = glm::rotate(model, glm::radians(-35.0f), glm::vec3(0, 1, 0));
+        model = glm::scale(model, glm::vec3(0.95f));
+        rover.draw(shaderProgram, (float)glfwGetTime(), model);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
