@@ -815,6 +815,7 @@ void MarsExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     glCullFace(GL_BACK);  // 기본값 복구
 }
 
+<<<<<<< HEAD
 //우주왕복선 모델링 클래스 구현
 SpaceShuttle::SpaceShuttle(
     Mesh& cuMesh,
@@ -1084,6 +1085,8 @@ void SpaceShuttle::draw(
 }
 
 
+=======
+>>>>>>> 9e60268eab5e6d0f639e5bacc77a8efac23852ed
 // ==========================================
 // 화성탐사로봇 구현
 // ==========================================

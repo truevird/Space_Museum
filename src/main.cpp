@@ -117,7 +117,10 @@ int main() {
     MarsExhibit marsStage(cubeMesh, spaceTex, marsTex, wallTex);
     satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
     MarsRover rover(cubeMesh, cylinderMesh, sphereMesh, sattTex, wallTex, spaceTex);
+<<<<<<< HEAD
     SpaceShuttle shuttle(cubeMesh,cylinderMesh,coneMesh,sphereMesh,wallTex,wallTex,spaceTex,sunTex); //우주왕복선
+=======
+>>>>>>> 9e60268eab5e6d0f639e5bacc77a8efac23852ed
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -174,6 +177,7 @@ int main() {
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
         solarSystem.draw(shaderProgram, (float)glfwGetTime(), model);
 
+<<<<<<< HEAD
 		//우주왕복선
         glm::mat4 shuttleModel(1.0f);
 
@@ -189,6 +193,8 @@ int main() {
 
         shuttle.draw(shaderProgram, shuttleModel);
 
+=======
+>>>>>>> 9e60268eab5e6d0f639e5bacc77a8efac23852ed
        /*
        // 목성
        glBindTexture(GL_TEXTURE_2D, jupiterTex);

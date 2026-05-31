@@ -113,6 +113,7 @@ struct MarsRover {
     );
 };
 
+<<<<<<< HEAD
 //우주왕복선
 struct SpaceShuttle { 
     Mesh* cubeMesh;
@@ -142,4 +143,6 @@ struct SpaceShuttle {
     );
 };
 
+=======
+>>>>>>> 9e60268eab5e6d0f639e5bacc77a8efac23852ed
 #endif
