@@ -1,0 +1,16 @@
+# 1. 컴파일 결과물 및 빌드 폴더 제외
+build/
+bin/Debug/
+bin/Release/
+bin/*.exe
+bin/*.ilk
+bin/*.pdb
+
+# 2. Visual Studio 및 VS Code 설정 파일 제외
+.vs/
+.vscode/
+out/
+
+# 3. 기타 OS 임시 파일
+Thumbs.db
+.DS_Store
