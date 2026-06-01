@@ -6,20 +6,32 @@ in vec3 Normal;
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
-uniform vec3 lightPos;
-uniform vec3 lightColor;
+#define NUM_LIGHTS 5
+uniform vec3 lightPos[NUM_LIGHTS];
+uniform vec3 lightColor[NUM_LIGHTS];
 
 void main()
 {
-    float ambientStrength = 0.3;
-    vec3 ambient = ambientStrength * lightColor;
-
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
     vec3 texColor = texture(ourTexture, TexCoord).rgb;
+    
+    // 최종 색상을 누적할 변수
+    vec3 totalAmbient = vec3(0.0);
+    vec3 totalDiffuse = vec3(0.0);
 
-    vec3 result = (ambient + diffuse) * texColor;
+    // 각 광원에 대해 반복문 수행
+    for(int i = 0; i < NUM_LIGHTS; i++)
+    {
+        // 1. Ambient
+        float ambientStrength = 0.03; // 다중 광원일 경우 강도를 낮추는 것이 자연스럽습니다.
+        totalAmbient += ambientStrength * lightColor[i];
+
+        // 2. Diffuse
+        vec3 lightDir = normalize(lightPos[i] - FragPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        totalDiffuse += diff * lightColor[i] * 0.3;
+    }
+
+    vec3 result = (totalAmbient + totalDiffuse) * texColor;
     FragColor = vec4(result, 1.0);
 }

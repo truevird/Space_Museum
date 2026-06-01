@@ -66,7 +66,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Jupiter 3D Showcase", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "SpaceMuseum", NULL, NULL);
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -107,13 +107,14 @@ int main() {
     unsigned int spaceTex = loadTexture("textures/space.jpg");
     unsigned int sattTex = loadTexture("textures/satellitebody.jpg");
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
+    unsigned int earthfloorTex = loadTexture("textures/earthfloor.jpg");
 
     //구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
     SolarSystem solarSystem(sphereMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
     Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
     SmallExhibit smStage(cubeMesh, spaceTex, wallTex);
-    EarthExhibit earthStage(cubeMesh, spaceTex, earthTex,  wallTex);
+    EarthExhibit earthStage(cubeMesh, spaceTex, earthfloorTex,  wallTex);
     MarsExhibit marsStage(cubeMesh, spaceTex, marsTex, wallTex);
     satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
     MarsRover rover(cubeMesh, cylinderMesh, sphereMesh, sattTex, wallTex, spaceTex);
@@ -130,8 +131,20 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shaderProgram.use();
-        shaderProgram.setVec3("lightPos", 2.0f, 1.0f, 3.0f);
-        shaderProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        shaderProgram.setVec3("lightPos[0]", 2.0f, 15.0f, 3.0f);
+        shaderProgram.setVec3("lightColor[0]", 1.0f, 1.0f, 1.0f);
+
+        shaderProgram.setVec3("lightPos[1]", 15.0f, 1.0f, -15.0f);
+        shaderProgram.setVec3("lightColor[1]", 1.0f, 1.0f, 1.0f);
+
+        shaderProgram.setVec3("lightPos[2]", -15.0f, 1.0f, -15.0f);
+        shaderProgram.setVec3("lightColor[2]", 1.0f, 1.0f, 1.0f);
+
+        shaderProgram.setVec3("lightPos[3]", -15.0f, 1.0f, 15.0f);
+        shaderProgram.setVec3("lightColor[3]", 1.0f, 1.0f, 1.0f);
+
+        shaderProgram.setVec3("lightPos[4]", 16.0f, 5.0f, 15.0f);
+        shaderProgram.setVec3("lightColor[4]", 1.0f, 1.0f, 1.0f);
 
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
@@ -156,21 +169,13 @@ int main() {
         model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
         smStage.draw(shaderProgram, model);
 
-        //인공위성 전시관
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, -15.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        earthStage.draw(shaderProgram, model);
-        //화성 바닥
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, 15.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        marsStage.draw(shaderProgram, model);
+        
+        
 
 
        //태양계
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(15.0f, 1.0f, -15.0f));
+        model = glm::translate(model, glm::vec3(15.0f, 0.0f, -15.0f));
         model = glm::rotate(model, (float)glfwGetTime() * 0.2f, glm::vec3(0.0f, 1.0f, 0.0f)); // 공전도 메인에서 제어 가능
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
         solarSystem.draw(shaderProgram, (float)glfwGetTime(), model);
@@ -181,7 +186,7 @@ int main() {
         shuttleModel =
             glm::translate(
                 shuttleModel,
-                glm::vec3(14.0f, 1.0f, 14.0f));
+                glm::vec3(15.0f, -1.0f, 15.0f));
 
         shuttleModel =
             glm::scale(
@@ -190,38 +195,25 @@ int main() {
 
         shuttle.draw(shaderProgram, shuttleModel);
 
-       /*
-       // 목성
-       glBindTexture(GL_TEXTURE_2D, jupiterTex);
-       model = glm::mat4(1.0f);
-       model = glm::rotate(model, (float)glfwGetTime() * 0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-       shaderProgram.setMat4("model", model);
-       sphereMesh.draw();
-       */
-
-        /*glBindTexture(GL_TEXTURE_2D, wallTex);
+        //인공위성 전시관
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 10.0f, 0.0f));
-        shaderProgram.setMat4("model", model);
-        cylinderMesh.draw();
+        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, -15.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        earthStage.draw(shaderProgram, model);
 
-        glBindTexture(GL_TEXTURE_2D, wallTex);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 3.0f, 0.0f));
-        shaderProgram.setMat4("model", model);
-        coneMesh.draw();
 
-        glBindTexture(GL_TEXTURE_2D, wallTex);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 3.0f, 5.0f));
-        shaderProgram.setMat4("model", model);
-        ringMesh.draw();
-        */
         //인공위성
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 0.5f, -15.0f));
+        model = glm::translate(model, glm::vec3(-15.0f, 1.0f, -17.0f));
+        model = glm::rotate(model, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         satelliteMesh.draw(shaderProgram, model);
 
+        //화성 바닥
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, 15.0f));
+        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        marsStage.draw(shaderProgram, model);
         // 화성 탐사 로봇
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, -1.7f, 15.0f));
