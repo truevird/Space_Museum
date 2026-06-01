@@ -143,30 +143,30 @@ void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     shader.setMat4("model", jupiterModel);
     sphereMesh->draw();
 
-    // 7. 토성 (이 코드로 완전히 대체하세요!)
+    // 7. 토성
     glBindTexture(GL_TEXTURE_2D, saturnTex);
     glm::mat4 saturnModel = parentModel;
 
-    // (1) 공전
+    // 공전
     saturnModel = glm::rotate(saturnModel, time * 0.034f + glm::radians(120.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     saturnModel = glm::translate(saturnModel, glm::vec3(16.0f, 0.0f, 0.0f));
 
-    // (2) 토성계 전체 자전축 기울기
+    // 토성계 전체 자전축 기울기
     saturnModel = glm::rotate(saturnModel, glm::radians(20.0f), glm::vec3(1.0f, 0.0f, 0.5f));
 
-    // (3) 자전
+    // 자전
     saturnModel = glm::rotate(saturnModel, time * 2.2f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    // (4) 토성 구체 그리기
+    // 토성 구체 그리기
     glm::mat4 planetModel = glm::scale(saturnModel, glm::vec3(1.0f, 1.0f, 1.0f));
     shader.setMat4("model", planetModel);
     sphereMesh->draw();
 
-    // (5) 토성 고리 그리기
+    // 토성 고리 그리기
     glm::mat4 ringModel = glm::scale(saturnModel, glm::vec3(1.6f, 1.6f, 1.6f));
     shader.setMat4("model", ringModel);
 
-    // 🔥 [해결사] 고리 그리고 나서 컬링을 '확실하게 꺼서' 원래대로 돌려놓습니다!
+    // 컬링 해제
     glDisable(GL_CULL_FACE);
     ringMesh->draw();
 
@@ -739,7 +739,7 @@ void MarsExhibit::draw(Shader& shader, glm::mat4 parentModel) {
 
     // 천장
     model = parentModel;
-    model = glm::scale(model, glm::vec3(4.9f, 0.49f, 4.4f));  // 약간 작게
+    model = glm::scale(model, glm::vec3(4.9f, 0.49f, 4.4f));
     model = glm::translate(model, glm::vec3(0.0f, 3.0f, 0.0f));
     shader.setMat4("model", model);
     cubeMesh->draw();
@@ -747,7 +747,7 @@ void MarsExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     glBindTexture(GL_TEXTURE_2D, floorTex);
     //바닥
     model = parentModel;
-    model = glm::scale(model, glm::vec3(4.9f, 0.49f, 4.4f));  // 약간 작게
+    model = glm::scale(model, glm::vec3(4.9f, 0.49f, 4.4f));
     model = glm::translate(model, glm::vec3(0.0f, -2.9f, 0.0f));
     shader.setMat4("model", model);
     cubeMesh->draw();

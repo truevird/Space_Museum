@@ -12,7 +12,7 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-// 전역 변수 (콜백용)
+// 전역 변수(콜백)
 Camera camera(glm::vec3(5.0f, 4.0f, 8.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -109,7 +109,7 @@ int main() {
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
     unsigned int earthfloorTex = loadTexture("textures/earthfloor.jpg");
 
-    //구조체 생성
+    // 구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
     SolarSystem solarSystem(sphereMesh, ringMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
     Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
@@ -152,13 +152,13 @@ int main() {
         shaderProgram.setMat4("view", view);
 
         glm::mat4 model;
-        //전시장
+        // 전시장
         model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(3.0f, 1.8f, 3.0f));
         myStage.draw(shaderProgram, model);
-
-        //작은 전시장
-        //태양 전시관
+        
+        // 작은 전시장
+        // 태양 전시관
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(15.0f, 1.8f, -15.0f));
         model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
@@ -173,14 +173,14 @@ int main() {
         
 
 
-       //태양계
+       // 태양계
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(15.0f, 0.0f, -15.0f));
         model = glm::rotate(model, (float)glfwGetTime() * 0.2f, glm::vec3(0.0f, 1.0f, 0.0f)); // 공전도 메인에서 제어 가능
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
         solarSystem.draw(shaderProgram, (float)glfwGetTime(), model);
 
-		//우주왕복선
+		// 우주왕복선
         glm::mat4 shuttleModel(1.0f);
 
         shuttleModel =
@@ -195,21 +195,21 @@ int main() {
 
         shuttle.draw(shaderProgram, shuttleModel);
 
-        //인공위성 전시관
+        // 인공위성 전시관
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, 1.8f, -15.0f));
         model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
         earthStage.draw(shaderProgram, model);
 
 
-        //인공위성
+        // 인공위성
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, 1.0f, -17.0f));
         model = glm::rotate(model, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         satelliteMesh.draw(shaderProgram, model);
 
-        //화성 바닥
+        // 화성 바닥
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-15.0f, 1.8f, 15.0f));
         model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));

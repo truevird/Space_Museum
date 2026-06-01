@@ -24,7 +24,7 @@ void Mesh::draw() const {
     }
     glBindVertexArray(0);
 }
-//평면 메쉬
+// 평면 메쉬
 Mesh createFloorMesh() {
     float floorVertices[] = {
         -10.0f, 0.0f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  10.0f,
@@ -45,7 +45,7 @@ Mesh createFloorMesh() {
     setMeshAttributes();
     return mesh;
 }
-//정육면체 메쉬
+// 정육면체 메쉬
 Mesh createCubeMesh() {
     float cube_vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -96,7 +96,7 @@ Mesh createCubeMesh() {
     setMeshAttributes();
     return mesh;
 }
-//구 메쉬
+// 구 메쉬
 Mesh createSphereMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -142,7 +142,7 @@ Mesh createSphereMesh() {
     setMeshAttributes();
     return mesh;
 }
-//원기둥 메쉬
+// 원기둥 메쉬
 Mesh createCylinderMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -160,12 +160,12 @@ Mesh createCylinderMesh() {
 
         // 아래쪽 원 둘레
         vertices.push_back(x); vertices.push_back(0.0f); vertices.push_back(z);
-        vertices.push_back(x); vertices.push_back(0.0f); vertices.push_back(z); // normal 대충
+        vertices.push_back(x); vertices.push_back(0.0f); vertices.push_back(z);
         vertices.push_back((float)i / segments); vertices.push_back(0.0f);
 
         // 위쪽 원 둘레
         vertices.push_back(x); vertices.push_back(height); vertices.push_back(z);
-        vertices.push_back(x); vertices.push_back(0.0f); vertices.push_back(z); // normal 대충
+        vertices.push_back(x); vertices.push_back(0.0f); vertices.push_back(z);
         vertices.push_back((float)i / segments); vertices.push_back(1.0f);
     }
 
@@ -225,7 +225,7 @@ Mesh createCylinderMesh() {
 
     return mesh;
 }
-//원뿔 메쉬
+// 원뿔 메쉬
 Mesh createConeMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -287,7 +287,7 @@ Mesh createConeMesh() {
 
     return mesh;
 }
-//고리 메쉬
+// 고리 메쉬
 Mesh createRingMesh() {
     Mesh mesh;
     std::vector<float> vertices;
@@ -344,7 +344,7 @@ Mesh createRingMesh() {
 
     return mesh;
 }
-//반구 메쉬
+// 반구 메쉬
 Mesh createAntennaMesh() {
     Mesh mesh;
     std::vector<float> vertices;

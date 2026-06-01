@@ -114,7 +114,7 @@ struct MarsRover {
     );
 };
 
-//우주왕복선
+// 우주왕복선
 struct SpaceShuttle { 
     Mesh* cubeMesh;
     Mesh* cylinderMesh;

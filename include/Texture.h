@@ -20,7 +20,7 @@ inline unsigned int loadTexture(const std::string& path, bool flipY = false, boo
     int width, height, nrChannels;
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data) {
-        // 수평 반전이 필요하면 픽셀 데이터를 직접 뒤집음
+        //  픽셀 데이터 수평 반전 방식
         if (flipX && width > 1 && height > 0) {
             const int bpp = nrChannels; // bytes per pixel
             for (int y = 0; y < height; ++y) {
