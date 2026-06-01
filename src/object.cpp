@@ -84,8 +84,8 @@ void EarthMoonSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
 // ==========================================
 // SolarSystem 구현
 // ==========================================
-SolarSystem::SolarSystem(Mesh& mesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex)
-    : sphereMesh(&mesh), earthMoon(&emSystem), solarTex(sTex), mercuryTex(meTex), venusTex(vTex), marsTex(maTex), jupiterTex(jTex), saturnTex(saTex), uranusTex(uTex), neptuneTex(nTex) {
+SolarSystem::SolarSystem(Mesh& mesh, Mesh& rMesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex)
+    : sphereMesh(&mesh), ringMesh(&rMesh), earthMoon(&emSystem), solarTex(sTex), mercuryTex(meTex), venusTex(vTex), marsTex(maTex), jupiterTex(jTex), saturnTex(saTex), uranusTex(uTex), neptuneTex(nTex) {
 }
 
 void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
@@ -143,15 +143,32 @@ void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     shader.setMat4("model", jupiterModel);
     sphereMesh->draw();
 
-    // 7. 토성
+    // 7. 토성 (이 코드로 완전히 대체하세요!)
     glBindTexture(GL_TEXTURE_2D, saturnTex);
     glm::mat4 saturnModel = parentModel;
+
+    // (1) 공전
     saturnModel = glm::rotate(saturnModel, time * 0.034f + glm::radians(120.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     saturnModel = glm::translate(saturnModel, glm::vec3(16.0f, 0.0f, 0.0f));
+
+    // (2) 토성계 전체 자전축 기울기
+    saturnModel = glm::rotate(saturnModel, glm::radians(20.0f), glm::vec3(1.0f, 0.0f, 0.5f));
+
+    // (3) 자전
     saturnModel = glm::rotate(saturnModel, time * 2.2f, glm::vec3(0.0f, 1.0f, 0.0f));
-    saturnModel = glm::scale(saturnModel, glm::vec3(1.0f, 1.0f, 1.0f));
-    shader.setMat4("model", saturnModel);
+
+    // (4) 토성 구체 그리기
+    glm::mat4 planetModel = glm::scale(saturnModel, glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.setMat4("model", planetModel);
     sphereMesh->draw();
+
+    // (5) 토성 고리 그리기
+    glm::mat4 ringModel = glm::scale(saturnModel, glm::vec3(1.6f, 1.6f, 1.6f));
+    shader.setMat4("model", ringModel);
+
+    // 🔥 [해결사] 고리 그리고 나서 컬링을 '확실하게 꺼서' 원래대로 돌려놓습니다!
+    glDisable(GL_CULL_FACE);
+    ringMesh->draw();
 
     // 8. 천왕성
     glBindTexture(GL_TEXTURE_2D, uranusTex);

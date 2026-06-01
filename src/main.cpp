@@ -111,7 +111,7 @@ int main() {
 
     //구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
-    SolarSystem solarSystem(sphereMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
+    SolarSystem solarSystem(sphereMesh, ringMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
     Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
     SmallExhibit smStage(cubeMesh, spaceTex, wallTex);
     EarthExhibit earthStage(cubeMesh, spaceTex, earthfloorTex,  wallTex);

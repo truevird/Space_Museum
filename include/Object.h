@@ -59,6 +59,7 @@ struct EarthMoonSystem {
 // 3. 태양계 구조체
 struct SolarSystem {
     Mesh* sphereMesh;
+    Mesh* ringMesh;
     EarthMoonSystem* earthMoon;
     unsigned int solarTex;
     unsigned int mercuryTex;
@@ -69,7 +70,7 @@ struct SolarSystem {
     unsigned int uranusTex;
     unsigned int neptuneTex;
 
-    SolarSystem(Mesh& mesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex);
+    SolarSystem(Mesh& mesh, Mesh& rMesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex);
     void draw(Shader& shader, float time, glm::mat4 parentModel);
 };
 
