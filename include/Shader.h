@@ -60,5 +60,8 @@ public:
     void setVec3(const std::string& name, float x, float y, float z) const {
         glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
     }
+    void setBool(const std::string &name, bool value) const {
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+    }
 };
 #endif

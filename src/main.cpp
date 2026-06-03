@@ -116,6 +116,15 @@ int main() {
     unsigned int sattTex = loadTexture("textures/satellitebody.jpg");
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
     unsigned int earthfloorTex = loadTexture("textures/earthfloor.jpg");
+    unsigned int solarsystempicTex = loadTexture("textures/SolarSystemPicture.jpg",true,true);
+    unsigned int solarsysteminfoTex = loadTexture("textures/SolarSystemInfo.jpg",true,true);
+    unsigned int satellitepicTex = loadTexture("textures/SatellitePicture.jpg",true,true);
+    unsigned int satelliteinfoTex = loadTexture("textures/SatelliteInfo.jpg",true,true);
+    unsigned int marsroverpicTex = loadTexture("textures/MarsRoverPicture.jpg",true,true);
+    unsigned int marsroverinfoTex = loadTexture("textures/MarsRoverInfo.jpg",true,true);
+    unsigned int spaceshuttlepicTex = loadTexture("textures/SpaceShuttlePicture.jpg",true,true);
+    unsigned int spaceshuttleinfoTex = loadTexture("textures/SpaceShuttleInfo.jpg",true,true);
+
      
     // 구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
@@ -128,6 +137,15 @@ int main() {
     satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
     MarsRover rover(cubeMesh, cylinderMesh, sphereMesh, sattTex, wallTex, spaceTex);
     SpaceShuttle shuttle(cubeMesh,cylinderMesh,coneMesh,sphereMesh,wallTex,wallTex,spaceTex,sunTex); //우주왕복선
+    Info solarpic(floorMesh,solarsystempicTex);
+    Info solarinfo(floorMesh,solarsysteminfoTex);
+    Info satellitepic(floorMesh,satellitepicTex);
+    Info satelliteinfo(floorMesh,satelliteinfoTex);
+    Info marsroverpic(floorMesh,marsroverpicTex);
+    Info marsroverinfo(floorMesh,marsroverinfoTex);
+    Info spaceshuttlepic(floorMesh,spaceshuttlepicTex);
+    Info spaceshuttleinfo(floorMesh,spaceshuttleinfoTex);
+
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -140,7 +158,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shaderProgram.use();
-        shaderProgram.setVec3("lightPos[0]", 2.0f, 15.0f, 3.0f);
+        shaderProgram.setVec3("lightPos[0]", 0.0f, 4.5f, 0.0f);
         shaderProgram.setVec3("lightColor[0]", 1.0f, 1.0f, 1.0f);
 
         shaderProgram.setVec3("lightPos[1]", 15.0f, 1.0f, -15.0f);
@@ -159,6 +177,7 @@ int main() {
         glm::mat4 view = camera.GetViewMatrix();
         shaderProgram.setMat4("projection", projection);
         shaderProgram.setMat4("view", view);
+        shaderProgram.setBool("useLighting", true);
 
         glm::mat4 model;
         // 전시장
@@ -217,6 +236,62 @@ int main() {
         model = glm::rotate(model, glm::radians(35.0f), glm::vec3(-0.2, 1, -0.1));
         model = glm::scale(model, glm::vec3(2.0f));
         rover.draw(shaderProgram, (float)glfwGetTime(), model);
+
+        shaderProgram.setBool("useLighting", false);
+
+        //태양계전시 사진
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(9.99f, 4.5f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        solarpic.draw(shaderProgram, model);
+
+        //태양계전시 안내판
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(9.99f, -3.5f, 6.2f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        solarinfo.draw(shaderProgram, model);
+
+        //인공위성전시 사진
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 4.5f, -8.59f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        satellitepic.draw(shaderProgram, model);
+
+        //인공위성전시 안내판
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(6.2f, -3.5f, -8.59f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        satelliteinfo.draw(shaderProgram, model);
+
+        //화성탐사로봇전시 사진
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 4.5f, 8.59f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        marsroverpic.draw(shaderProgram, model);
+
+        //화성탐사로복전시 안내판
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-6.2f, -3.5f, 8.59f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        marsroverinfo.draw(shaderProgram, model);
+
+        //우주왕복선전시 사진
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-9.99f, 4.5f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        spaceshuttlepic.draw(shaderProgram, model);
+
+        //우주왕복선전시 안내판
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-9.99f, -3.5f, -6.2f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        spaceshuttleinfo.draw(shaderProgram, model);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

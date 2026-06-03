@@ -784,3 +784,23 @@ void MarsRover::draw(Shader& shader, float time, glm::mat4 parentModel) {
         }
     }
 }
+
+//단일 전시안내판
+Info::Info(Mesh& fMesh, unsigned int iTex)
+   :  floorMesh(&fMesh), infoTex(iTex) {
+}
+
+void Info::draw(Shader& shader, glm::mat4 parentModel) {
+   glm::mat4 model;
+
+   glBindTexture(GL_TEXTURE_2D, infoTex);
+
+   model = parentModel;
+   
+   model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+   model = glm::scale(model, glm::vec3(0.24f, 0.15f, 1.0f));
+   model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+   shader.setMat4("model", model);
+   floorMesh->draw();
+
+}

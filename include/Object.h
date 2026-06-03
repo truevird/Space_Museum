@@ -130,5 +130,12 @@ struct SpaceShuttle {
         glm::mat4 parentModel = glm::mat4(1.0f)
     );
 };
+struct Info {
+    Mesh* floorMesh;
+    unsigned int infoTex;
+
+    Info(Mesh& fMesh, unsigned int ifTex);
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
 
 #endif
