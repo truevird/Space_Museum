@@ -6,8 +6,7 @@
 Stage::Stage(Mesh& spMesh, unsigned int wTex)
     : sphereMesh(&spMesh), wallTex(wTex) {
 }
-
-void Stage::draw(Shader& shader, glm::mat4 parentModel) {
+void Stage::draw(Shader& shader, float time, glm::mat4 parentModel) {
     glm::mat4 model;
 
     // 2. 사방의 벽 (Walls) 
@@ -17,6 +16,7 @@ void Stage::draw(Shader& shader, glm::mat4 parentModel) {
     model = parentModel; 
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(30.0f, 30.0f, 30.0f));
+    model = glm::rotate(model, time * 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
     shader.setMat4("model", model);
     sphereMesh->draw();
 
@@ -27,12 +27,13 @@ Planet::Planet(Mesh& sMesh, unsigned int pTex)
     :  sphereMesh(&sMesh), planetTex(pTex) {
 }
 
-void Planet::draw(Shader& shader, glm::mat4 parentModel) {
+void Planet::draw(Shader& shader, float time, glm::mat4 parentModel) {
     glm::mat4 model;
 
     glBindTexture(GL_TEXTURE_2D, planetTex);
 
     model = parentModel;
+    model = glm::rotate(model, time * 0.04f, glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
     shader.setMat4("model", model);
@@ -70,8 +71,8 @@ void EarthMoonSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
 // ==========================================
 // SolarSystem 구현
 // ==========================================
-SolarSystem::SolarSystem(Mesh& mesh, Mesh& rMesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex)
-    : sphereMesh(&mesh), ringMesh(&rMesh), earthMoon(&emSystem), solarTex(sTex), mercuryTex(meTex), venusTex(vTex), marsTex(maTex), jupiterTex(jTex), saturnTex(saTex), uranusTex(uTex), neptuneTex(nTex) {
+SolarSystem::SolarSystem(Mesh& mesh, Mesh& rMesh, Mesh& srMesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex, unsigned int rTex)
+    : sphereMesh(&mesh), ringMesh(&rMesh), springMesh(&srMesh), earthMoon(&emSystem), solarTex(sTex), mercuryTex(meTex), venusTex(vTex), marsTex(maTex), jupiterTex(jTex), saturnTex(saTex), uranusTex(uTex), neptuneTex(nTex), ringTex(rTex) {
 }
 
 void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
@@ -108,6 +109,7 @@ void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     earthModel = glm::rotate(earthModel, time * 1.0f, glm::vec3(0.0f, 1.0f, 0.0f)); // 태양 기준 공전
     earthModel = glm::translate(earthModel, glm::vec3(7.0f, 0.0f, 0.0f));           // 태양과의 거리
     earthMoon->draw(shader, time, earthModel);
+    
 
     // 5. 화성
     glBindTexture(GL_TEXTURE_2D, marsTex);
@@ -175,6 +177,61 @@ void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     neptuneModel = glm::scale(neptuneModel, glm::vec3(0.7f, 0.7f, 0.7f));
     shader.setMat4("model", neptuneModel);
     sphereMesh->draw();
+
+    glBindTexture(GL_TEXTURE_2D, ringTex);
+    glm::mat4 springModel = parentModel;
+    springModel = glm::translate(springModel, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel = glm::scale(springModel, glm::vec3(3.5f, 3.5f, 3.5f));
+    shader.setMat4("model", springModel);
+    springMesh->draw();
+
+    glm::mat4 springModel1 = parentModel;
+    springModel1 = glm::translate(springModel1, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel1 = glm::scale(springModel1, glm::vec3(5.0f, 5.0f, 5.0f));
+    shader.setMat4("model", springModel1);
+    springMesh->draw();
+
+
+    glm::mat4 springModel2 = parentModel;
+    springModel2 = glm::translate(springModel2, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel2 = glm::scale(springModel2, glm::vec3(7.0f, 7.0f, 7.0f));
+    shader.setMat4("model", springModel2);
+    springMesh->draw();
+
+
+    glm::mat4 springModel3 = parentModel;
+    springModel3 = glm::translate(springModel3, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel3 = glm::scale(springModel3, glm::vec3(9.0f, 9.0f, 9.0f));
+    shader.setMat4("model", springModel3);
+    springMesh->draw();
+
+
+    glm::mat4 springModel4 = parentModel;
+    springModel4 = glm::translate(springModel4, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel4 = glm::scale(springModel4, glm::vec3(12.5f, 12.5f, 12.5f));
+    shader.setMat4("model", springModel4);
+    springMesh->draw();
+
+    glm::mat4 springModel5 = parentModel;
+    springModel5 = glm::translate(springModel5, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel5 = glm::scale(springModel5, glm::vec3(16.0f, 16.0f, 16.0f));
+    shader.setMat4("model", springModel5);
+    springMesh->draw();
+
+    glm::mat4 springModel6 = parentModel;
+    springModel6 = glm::translate(springModel6, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel6 = glm::scale(springModel6, glm::vec3(19.0f, 19.0f, 19.0f));
+    shader.setMat4("model", springModel6);
+    springMesh->draw();
+
+    glm::mat4 springModel7 = parentModel;
+    springModel7 = glm::translate(springModel7, glm::vec3(0.0f, 0.0f, 0.0f));
+    springModel7 = glm::scale(springModel7, glm::vec3(22.0f, 22.0f, 22.0f));
+    shader.setMat4("model", springModel7);
+    springMesh->draw();
+
+
+
 }
 
 
@@ -186,7 +243,7 @@ satellite::satellite(Mesh&spMesh,  Mesh& anMesh, Mesh& cuMesh, Mesh& coMesh, uns
     : sphereMesh(&spMesh), antennaMesh(&anMesh), cubeMesh(&cuMesh), coneMesh(&coMesh), bodyTex(sbTex), solarTex(slTex), antennaTex(anTex) {
 }
 
-void satellite::draw(Shader& shader, glm::mat4 parentModel) {
+void satellite::draw(Shader& shader,float time, glm::mat4 parentModel) {
     glm::mat4 model;
 
     // 1. 위성 본체 (Body)
@@ -197,6 +254,7 @@ void satellite::draw(Shader& shader, glm::mat4 parentModel) {
     model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
     shader.setMat4("model", model);
     cubeMesh->draw();
+    
 
     // 2. 태양광 패널 (Solar Panels)
     glBindTexture(GL_TEXTURE_2D, solarTex);
@@ -234,6 +292,127 @@ void satellite::draw(Shader& shader, glm::mat4 parentModel) {
     sphereMesh->draw();
 
 } 
+// ==========================================
+// CylinderSatellite 구현 (원기둥 위성)
+// ==========================================
+CylinderSatellite::CylinderSatellite(Mesh& cyMesh, Mesh& paMesh, Mesh& anMesh, Mesh& coMesh, Mesh& spMesh, Mesh& srMesh, unsigned int bTex, unsigned int pTex, unsigned int aTex)
+    : cylinderMesh(&cyMesh), panelMesh(&paMesh), antennaMesh(&anMesh), coneMesh(&coMesh), sphereMesh(&spMesh), springMesh(&srMesh), bodyTex(bTex), panelTex(pTex), accentTex(aTex) {
+}
+
+void CylinderSatellite::draw(Shader& shader,float time, glm::mat4 parentModel) {
+    glm::mat4 model;
+
+    // 본체 (원기둥)
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, accentTex);
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.0f, 1.8f, 1.0f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.1f, 1.0f, 1.1f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    //큐브
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.6f, 1.0f, 0.5f));
+    model = glm::scale(model, glm::vec3(0.2f, 0.25f, 0.3f));
+    shader.setMat4("model", model);
+    panelMesh->draw();
+    //큐브
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(-0.6f, 1.0f, 0.5f));
+    model = glm::scale(model, glm::vec3(0.2f, 0.25f, 0.3f));
+    shader.setMat4("model", model);
+    panelMesh->draw();
+
+    //큐브
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.6f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.3f, 0.25f, 0.2f));
+    shader.setMat4("model", model);
+    panelMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(1.0f, 1.0f, 0.5f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::scale(model, glm::vec3(0.1f, 1.0f, 0.1f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.5f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::scale(model, glm::vec3(0.1f, 1.0f, 0.1f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    glBindTexture(GL_TEXTURE_2D, bodyTex);
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.05f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.05f, 1.0f, 1.05f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.05f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.9f, 1.8f, 0.9f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, -0.2f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.9f, 1.8f, 0.9f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+
+
+    // 태양광 패널 (좌우)
+    glBindTexture(GL_TEXTURE_2D, panelTex);
+    for (float side : { -1.0f, 1.0f }) {
+        model = parentModel;
+        model = glm::translate(model, glm::vec3(side * 1.7f, 1.0f, 0.5f));
+        model = glm::scale(model, glm::vec3(1.6f, 0.12f, 0.6f));
+        shader.setMat4("model", model);
+        panelMesh->draw();
+    }
+
+    // 안테나
+    glBindTexture(GL_TEXTURE_2D, accentTex);
+    model = parentModel;
+    
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 2.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+    
+    shader.setMat4("model", model);
+    antennaMesh->draw();
+    
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 2.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+    shader.setMat4("model", model);
+    coneMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 1.0f, 2.3f));
+    model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+    shader.setMat4("model", model);
+    sphereMesh->draw();
+}
 
 // ==========================================
 // SmallExhibit 구현 (작은 전시관 - 사방에 문 구멍)
@@ -288,17 +467,6 @@ void SmallExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     shader.setMat4("model", model);
     cubeMesh->draw();
 
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(2.25f, -0.75f, -1.5f));
-    model = glm::scale(model, glm::vec3(0.5f, 1.0f, 1.5f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(2.25f, -0.75f, 1.5f));
-    model = glm::scale(model, glm::vec3(0.5f, 1.0f, 1.5f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
 
     // 앞쪽 벽 (상단 + 하단 양쪽)
     model = parentModel;
@@ -388,7 +556,7 @@ SpaceShuttle::SpaceShuttle(
 }
 
 void SpaceShuttle::draw(
-    Shader& shader,
+    Shader& shader,float time,
     glm::mat4 parentModel
 )
 {
@@ -454,7 +622,7 @@ void SpaceShuttle::draw(
     // 꼬리 엔진부
     //--------------------------------------------------
 
-    glBindTexture(GL_TEXTURE_2D, darkTex);
+    glBindTexture(GL_TEXTURE_2D, bodyTex);
 
     float engineX[3] =
     {
@@ -490,6 +658,49 @@ void SpaceShuttle::draw(
         shader.setMat4("model", model);
         cylinderMesh->draw();
     }
+
+    glBindTexture(GL_TEXTURE_2D, sunTex);
+
+    float fire[3] =
+    {
+        -0.35f,
+         0.0f,
+         0.35f
+    };
+
+    for (int i = 0;i < 3;i++)
+    {
+        model = parentModel;
+
+        model = glm::translate(
+            model,
+            glm::vec3(
+                fire[i],
+                0.0f,
+                -4.9f
+            ));
+
+        model = glm::rotate(
+            model,
+            glm::radians(90.0f),
+            glm::vec3(1, 0, 0));
+
+        model = glm::scale(
+            model,
+            glm::vec3(
+                0.2f,
+                1.4f,
+                0.2f));
+        int d = 1;
+        if(i==1)d=-1;
+
+        model = glm::rotate(model, time * 40.0f, glm::vec3(0, d, d));
+
+        shader.setMat4("model", model);
+        sphereMesh->draw();
+    }
+
+
 
     //--------------------------------------------------
     // 주 날개
@@ -639,8 +850,8 @@ void SpaceShuttle::draw(
 // ==========================================
 
 MarsRover::MarsRover(
-    Mesh& cuMesh, Mesh& cyMesh, Mesh& spMesh, unsigned int bTex, unsigned int wTex, unsigned int dTex
-) : cubeMesh(&cuMesh), cylinderMesh(&cyMesh), sphereMesh(&spMesh), bodyTex(bTex), wheelTex(wTex), darkTex(dTex) {
+    Mesh& cuMesh, Mesh& cyMesh, Mesh& spMesh, Mesh& coMesh, unsigned int bTex, unsigned int wTex, unsigned int dTex
+) : cubeMesh(&cuMesh), cylinderMesh(&cyMesh), sphereMesh(&spMesh), coneMesh(&coMesh), bodyTex(bTex), wheelTex(wTex), darkTex(dTex) {
 }
 
 void MarsRover::draw(Shader& shader, float time, glm::mat4 parentModel) {
@@ -733,15 +944,14 @@ void MarsRover::draw(Shader& shader, float time, glm::mat4 parentModel) {
     shader.setMat4("model", model);
     cubeMesh->draw();
 
+    glBindTexture(GL_TEXTURE_2D, wheelTex);
     glm::mat4 drill = arm2;
-    drill = glm::translate(drill, glm::vec3(0.5f, 0.0f, 0.0f));
-    model = drill;
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 0, 1));
-    model = glm::translate(model, glm::vec3(0.0f, -0.15f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.0f));
     model = glm::rotate(model, time * 10.0f, glm::vec3(0, 1, 0));
-    model = glm::scale(model, glm::vec3(0.05f, 0.2f, 0.05f));
+    model = glm::scale(model, glm::vec3(1.5f, 0.2f, 1.5f));
     shader.setMat4("model", model);
-    cylinderMesh->draw();
+    coneMesh->draw();
 
     // 4. 서스펜션 및 바퀴
 

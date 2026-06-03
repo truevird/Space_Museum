@@ -13,7 +13,7 @@ struct Stage {
     unsigned int wallTex;
 
     Stage(Mesh& spMesh, unsigned int wTex);
-    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+    void draw(Shader& shader, float time, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
 struct Planet {
@@ -21,7 +21,7 @@ struct Planet {
     unsigned int planetTex;
 
     Planet(Mesh& sMesh, unsigned int pTex);
-    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+    void draw(Shader& shader, float time, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
 struct SmallExhibit {
@@ -48,6 +48,7 @@ struct EarthMoonSystem {
 struct SolarSystem {
     Mesh* sphereMesh;
     Mesh* ringMesh;
+    Mesh* springMesh;
     EarthMoonSystem* earthMoon;
     unsigned int solarTex;
     unsigned int mercuryTex;
@@ -57,8 +58,9 @@ struct SolarSystem {
     unsigned int saturnTex;
     unsigned int uranusTex;
     unsigned int neptuneTex;
+    unsigned int ringTex;
 
-    SolarSystem(Mesh& mesh, Mesh& rMesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex);
+    SolarSystem(Mesh& mesh, Mesh& rMesh, Mesh& spMesh, EarthMoonSystem& emSystem, unsigned int sTex, unsigned int meTex, unsigned int vTex, unsigned int maTex, unsigned int jTex, unsigned int saTex, unsigned int uTex, unsigned int nTex, unsigned int rTex);
     void draw(Shader& shader, float time, glm::mat4 parentModel);
 };
 
@@ -73,14 +75,31 @@ struct satellite {
     unsigned int antennaTex;
 
     satellite(Mesh& spMesh, Mesh& anMesh, Mesh& cuMesh, Mesh& coMesh, unsigned int sbTex, unsigned int slTex, unsigned int anTex);
-    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+    void draw(Shader& shader, float time, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
+// 원기둥 형태 인공위성
+struct CylinderSatellite {
+    Mesh* cylinderMesh;
+    Mesh* panelMesh; // 패널은 큐브 메쉬를 재사용
+    Mesh* antennaMesh; // 기존 안테나 메쉬 재사용
+    Mesh* coneMesh; // 기존 콘 메쉬 재사용
+    Mesh* sphereMesh; // 기존 스피어 메쉬 재사용
+    Mesh* springMesh;
+
+    unsigned int bodyTex;
+    unsigned int panelTex;
+    unsigned int accentTex;
+
+    CylinderSatellite(Mesh& cyMesh, Mesh& paMesh, Mesh& anMesh, Mesh& coMesh, Mesh& spMesh, Mesh& srMesh,unsigned int bTex, unsigned int pTex, unsigned int aTex);
+    void draw(Shader& shader, float time, glm::mat4 parentModel = glm::mat4(1.0f));
+};
 // 5.화성탐사로봇
 struct MarsRover {
     Mesh* cubeMesh;
     Mesh* cylinderMesh;
     Mesh* sphereMesh;
+    Mesh* coneMesh;
 
     unsigned int bodyTex;
     unsigned int wheelTex;
@@ -90,6 +109,7 @@ struct MarsRover {
         Mesh& cuMesh,
         Mesh& cyMesh,
         Mesh& spMesh,
+        Mesh& coMesh,
         unsigned int bTex,
         unsigned int wTex,
         unsigned int dTex
@@ -126,7 +146,7 @@ struct SpaceShuttle {
     );
 
     void draw(
-        Shader& shader,
+        Shader& shader, float time,
         glm::mat4 parentModel = glm::mat4(1.0f)
     );
 };

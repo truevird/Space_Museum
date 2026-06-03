@@ -19,5 +19,6 @@ Mesh createStSphereMesh();
 Mesh createCylinderMesh();
 Mesh createConeMesh();
 Mesh createRingMesh();
+Mesh createSpRingMesh();
 Mesh createAntennaMesh();
 #endif

@@ -391,6 +391,64 @@ Mesh createRingMesh() {
 
     return mesh;
 }
+
+Mesh createSpRingMesh() {
+    Mesh mesh;
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+
+    float innerRadius = 0.99f;
+    float outerRadius = 1.0f;
+    int segments = 128;
+
+    for (int i = 0; i <= segments; i++) {
+        float theta = (float)i / segments * 2.0f * M_PI;
+        float cosT = cos(theta);
+        float sinT = sin(theta);
+
+        // 외부 원
+        vertices.push_back(outerRadius * cosT);
+        vertices.push_back(0.0f);
+        vertices.push_back(outerRadius * sinT);
+        vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
+        vertices.push_back((float)i / segments); vertices.push_back(1.0f);
+
+        // 내부 원
+        vertices.push_back(innerRadius * cosT);
+        vertices.push_back(0.0f);
+        vertices.push_back(innerRadius * sinT);
+        vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
+        vertices.push_back((float)i / segments); vertices.push_back(0.0f);
+    }
+
+    for (int i = 0; i < segments; i++) {
+        int base = i * 2;
+        indices.push_back(base);
+        indices.push_back(base + 1);
+        indices.push_back(base + 2);
+
+        indices.push_back(base + 1);
+        indices.push_back(base + 3);
+        indices.push_back(base + 2);
+    }
+
+    mesh.count = (GLsizei)indices.size();
+    mesh.useIndices = true;
+
+    glGenVertexArrays(1, &mesh.VAO);
+    glGenBuffers(1, &mesh.VBO);
+    glGenBuffers(1, &mesh.EBO);
+
+    glBindVertexArray(mesh.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+    setMeshAttributes();
+
+    return mesh;
+}
+
 // 반구 메쉬
 Mesh createAntennaMesh() {
     Mesh mesh;
