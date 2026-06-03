@@ -15,6 +15,7 @@ struct Mesh {
 Mesh createFloorMesh();
 Mesh createCubeMesh();
 Mesh createSphereMesh();
+Mesh createStSphereMesh();
 Mesh createCylinderMesh();
 Mesh createConeMesh();
 Mesh createRingMesh();

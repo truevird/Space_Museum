@@ -17,7 +17,7 @@ public:
     float MouseSensitivity;
     float Zoom;
 
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)) : Front(glm::vec3(-0.5f, -0.3f, -1.0f)), MovementSpeed(5.0f), MouseSensitivity(0.04f), Zoom(45.0f) {
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)) : Front(glm::vec3(-0.5f, -0.3f, -1.0f)), MovementSpeed(8.0f), MouseSensitivity(0.08f), Zoom(45.0f) {
         Position = position;
         Up = glm::vec3(0.0f, 1.0f, 0.0f);
         Yaw = -120.0f;

@@ -1,6 +1,5 @@
 ﻿#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
 #include "Shader.h"
 #include "Camera.h"
 #include "Mesh.h"
@@ -9,8 +8,8 @@
 #include <iostream>
 
 // 설정
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1200;
 
 // 전역 변수(콜백)
 Camera camera(glm::vec3(5.0f, 4.0f, 8.0f));
@@ -44,6 +43,12 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        firstMouse = true;
+    }
+}
+
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
@@ -71,6 +76,8 @@ int main() {
     glfwSwapInterval(1);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
@@ -86,6 +93,7 @@ int main() {
     Mesh floorMesh = createFloorMesh();
     Mesh cubeMesh = createCubeMesh();
     Mesh sphereMesh = createSphereMesh();
+    Mesh stsphereMesh = createStSphereMesh();//법선이 안쪽
     Mesh cylinderMesh = createCylinderMesh();
     Mesh coneMesh = createConeMesh();
     Mesh ringMesh = createRingMesh();
@@ -108,14 +116,15 @@ int main() {
     unsigned int sattTex = loadTexture("textures/satellitebody.jpg");
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
     unsigned int earthfloorTex = loadTexture("textures/earthfloor.jpg");
-
+     
     // 구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
     SolarSystem solarSystem(sphereMesh, ringMesh, earthSystem, sunTex, mercuryTex, venusTex, marsTex, jupiterTex, saturnTex, uranusTex, neptuneTex);
-    Stage myStage(floorMesh, cubeMesh, floorTex, wallTex);
+    Stage myStage(stsphereMesh, spaceTex);
+    Planet earth(sphereMesh, earthTex);
+	Planet solar(sphereMesh, sunTex);
+	Planet mars(sphereMesh, marsTex);
     SmallExhibit smStage(cubeMesh, spaceTex, wallTex);
-    EarthExhibit earthStage(cubeMesh, spaceTex, earthfloorTex,  wallTex);
-    MarsExhibit marsStage(cubeMesh, spaceTex, marsTex, wallTex);
     satellite satelliteMesh(sphereMesh, antennaMesh, cubeMesh, coneMesh, sattTex, solarTex, wallTex);//안테나 텍스쳐 추가 필요
     MarsRover rover(cubeMesh, cylinderMesh, sphereMesh, sattTex, wallTex, spaceTex);
     SpaceShuttle shuttle(cubeMesh,cylinderMesh,coneMesh,sphereMesh,wallTex,wallTex,spaceTex,sunTex); //우주왕복선
@@ -157,68 +166,56 @@ int main() {
         model = glm::scale(model, glm::vec3(3.0f, 1.8f, 3.0f));
         myStage.draw(shaderProgram, model);
         
-        // 작은 전시장
+        // 작은 전시장 
         // 태양 전시관
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(15.0f, 1.8f, -15.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
         smStage.draw(shaderProgram, model);
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(15.0f, 1.8f, 15.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        smStage.draw(shaderProgram, model);
-
-        
-        
-
 
        // 태양계
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(15.0f, 0.0f, -15.0f));
+        model = glm::translate(model, glm::vec3(35.0f, -10.0f, 0.0f)); 
         model = glm::rotate(model, (float)glfwGetTime() * 0.2f, glm::vec3(0.0f, 1.0f, 0.0f)); // 공전도 메인에서 제어 가능
-        model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         solarSystem.draw(shaderProgram, (float)glfwGetTime(), model);
 
 		// 우주왕복선
-        glm::mat4 shuttleModel(1.0f);
-
-        shuttleModel =
-            glm::translate(
-                shuttleModel,
-                glm::vec3(15.0f, -1.0f, 15.0f));
-
-        shuttleModel =
-            glm::scale(
-                shuttleModel,
-                glm::vec3(0.8f));
-
-        shuttle.draw(shaderProgram, shuttleModel);
-
-        // 인공위성 전시관
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, -15.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        earthStage.draw(shaderProgram, model);
+        model = glm::translate(model, glm::vec3(-20.0f, -3.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(2.0f));
+        model = glm::rotate(model, glm::radians(50.0f), glm::vec3(-0.75f, 0.75f, -1.0f));
+        shuttle.draw(shaderProgram, model);
 
+        //지구
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -35.0f, -30.0f));
+        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+        earth.draw(shaderProgram, model); 
+        
+        //태양
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(15.0f, 10.0f, -50.0f)); 
+        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        solar.draw(shaderProgram, model);
 
         // 인공위성
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 1.0f, -17.0f));
-        model = glm::rotate(model, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        model = glm::translate(model, glm::vec3(5.0f, 0.0f, -30.0f));
+        model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0.75f, -0.75f, 1.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         satelliteMesh.draw(shaderProgram, model);
 
-        // 화성 바닥
+        //화성
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, 1.8f, 15.0f));
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-        marsStage.draw(shaderProgram, model);
+        model = glm::translate(model, glm::vec3(0.0f, -35.0f, 30.0f));
+        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+        mars.draw(shaderProgram, model);
+
         // 화성 탐사 로봇
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-15.0f, -1.7f, 15.0f));
-        model = glm::rotate(model, glm::radians(-35.0f), glm::vec3(0, 1, 0));
-        model = glm::scale(model, glm::vec3(0.95f));
+        model = glm::translate(model, glm::vec3(0.0f, -8.0f, 23.0f));
+        model = glm::rotate(model, glm::radians(35.0f), glm::vec3(-0.2, 1, -0.1));
+        model = glm::scale(model, glm::vec3(2.0f));
         rover.draw(shaderProgram, (float)glfwGetTime(), model);
 
         glfwSwapBuffers(window);

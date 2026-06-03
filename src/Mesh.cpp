@@ -142,6 +142,53 @@ Mesh createSphereMesh() {
     setMeshAttributes();
     return mesh;
 }
+
+Mesh createStSphereMesh() {
+    Mesh mesh;
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+    const int X_SEGMENTS = 64;
+    const int Y_SEGMENTS = 64;
+
+    for (int y = 0; y <= Y_SEGMENTS; ++y) {
+        for (int x = 0; x <= X_SEGMENTS; ++x) {
+            float xSegment = (float)x / (float)X_SEGMENTS;
+            float ySegment = (float)y / (float)Y_SEGMENTS;
+            float xPos = std::cos(xSegment * 2.0f * M_PI) * std::sin(ySegment * M_PI);
+            float yPos = std::cos(ySegment * M_PI);
+            float zPos = std::sin(xSegment * 2.0f * M_PI) * std::sin(ySegment * M_PI);
+
+            vertices.push_back(xPos); vertices.push_back(yPos); vertices.push_back(zPos);
+            vertices.push_back(-xPos); vertices.push_back(-yPos); vertices.push_back(-zPos);
+            vertices.push_back(xSegment); vertices.push_back(ySegment);
+        }
+    }
+    for (int y = 0; y < Y_SEGMENTS; ++y) {
+        for (int x = 0; x < X_SEGMENTS; ++x) {
+            indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+            indices.push_back(y * (X_SEGMENTS + 1) + x);
+            indices.push_back(y * (X_SEGMENTS + 1) + (x + 1));
+            indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+            indices.push_back(y * (X_SEGMENTS + 1) + (x + 1));
+            indices.push_back((y + 1) * (X_SEGMENTS + 1) + (x + 1));
+        }
+    }
+    mesh.count = (GLsizei)indices.size();
+    mesh.useIndices = true;
+
+    glGenVertexArrays(1, &mesh.VAO);
+    glGenBuffers(1, &mesh.VBO);
+    glGenBuffers(1, &mesh.EBO);
+
+    glBindVertexArray(mesh.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+    setMeshAttributes();
+    return mesh;
+}
+
 // 원기둥 메쉬
 Mesh createCylinderMesh() {
     Mesh mesh;

@@ -23,7 +23,7 @@ void main()
     for(int i = 0; i < NUM_LIGHTS; i++)
     {
         // 1. Ambient
-        float ambientStrength = 0.03; // 다중 광원일 경우 강도를 낮추는 것이 자연스럽습니다.
+        float ambientStrength = 0.03; 
         totalAmbient += ambientStrength * lightColor[i];
 
         // 2. Diffuse

@@ -9,12 +9,18 @@
 
 // 1. 전시관 구조체
 struct Stage {
-    Mesh* floorMesh;
-    Mesh* cubeMesh;
-    unsigned int floorTex;
+    Mesh* sphereMesh;
     unsigned int wallTex;
 
-    Stage(Mesh& fMesh, Mesh& cMesh, unsigned int fTex, unsigned int wTex);
+    Stage(Mesh& spMesh, unsigned int wTex);
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
+
+struct Planet {
+    Mesh* sphereMesh;
+    unsigned int planetTex;
+
+    Planet(Mesh& sMesh, unsigned int pTex);
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
@@ -24,24 +30,6 @@ struct SmallExhibit {
     unsigned int outerTex;  // 바깥쪽 텍스처
 
     SmallExhibit(Mesh& cMesh, unsigned int iTex, unsigned int oTex);
-    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
-};
-struct EarthExhibit {
-    Mesh* cubeMesh;
-    unsigned int innerTex;  // 안쪽 텍스처
-    unsigned int outerTex;
-    unsigned int floorTex;  // 바깥쪽 텍스처
-
-    EarthExhibit(Mesh& cMesh, unsigned int iTex, unsigned int fTex, unsigned int oTex);
-    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
-};
-struct MarsExhibit {
-    Mesh* cubeMesh;
-    unsigned int innerTex;  // 안쪽 텍스처
-    unsigned int outerTex;
-    unsigned int floorTex;  // 바깥쪽 텍스처
-
-    MarsExhibit(Mesh& cMesh, unsigned int iTex, unsigned int fTex, unsigned int oTex);
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
