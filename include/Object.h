@@ -33,6 +33,14 @@ struct SmallExhibit {
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
+struct GlassWall {
+    Mesh* cubeMesh;
+    glm::vec3 color;
+    float alpha;
+
+    GlassWall(Mesh& cMesh, const glm::vec3& colorIn, float alphaIn);
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
 
 // 2.지구 달 구조체
 struct EarthMoonSystem {

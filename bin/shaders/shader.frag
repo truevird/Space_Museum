@@ -11,15 +11,19 @@ uniform vec3 lightPos[NUM_LIGHTS];
 uniform vec3 lightColor[NUM_LIGHTS];
 
 uniform bool useLighting;
+uniform bool useColor;
+uniform vec3 overrideColor;
+uniform float alpha;
 
 void main()
 {
     
     vec3 texColor = texture(ourTexture, TexCoord).rgb;
+    vec3 baseColor = useColor ? overrideColor : texColor;
     
     if (!useLighting) 
         {
-            FragColor = vec4(texColor, 1.0);
+            FragColor = vec4(baseColor, alpha);
             return; // 여기서 함수를 종료하여 아래 조명 연산을 수행하지 않습니다.
         } 
 

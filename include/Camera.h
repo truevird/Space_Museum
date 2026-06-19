@@ -28,7 +28,8 @@ public:
     glm::mat4 GetViewMatrix() {
         return glm::lookAt(Position, Position + Front, Up);
     }
-    // 이동
+    
+    // 강제 이동 함수
     void ProcessKeyboard(int direction, float deltaTime) {
         float velocity = MovementSpeed * deltaTime;
         if (direction == 0) Position += Front * velocity; // W
@@ -38,6 +39,22 @@ public:
         if (direction == 4) Position += Up * velocity; // SPACE
         if (direction == 5) Position -= Up * velocity; // LCTRL
     }
+
+    // 이동할 위치를 미리 계산만 해서 반환하는 함수
+    glm::vec3 GetNextPosition(int direction, float deltaTime) const {
+        float velocity = MovementSpeed * deltaTime;
+        glm::vec3 nextPos = Position;
+        
+        if (direction == 0) nextPos += Front * velocity; // W
+        if (direction == 1) nextPos -= Front * velocity; // S
+        if (direction == 2) nextPos -= glm::normalize(glm::cross(Front, Up)) * velocity; // A
+        if (direction == 3) nextPos += glm::normalize(glm::cross(Front, Up)) * velocity; // D
+        if (direction == 4) nextPos += Up * velocity; // SPACE
+        if (direction == 5) nextPos -= Up * velocity; // LCTRL
+        
+        return nextPos;
+    }
+
     // 시점 전환
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) {
         xoffset *= MouseSensitivity;
@@ -52,6 +69,7 @@ public:
         }
         updateCameraVectors();
     }
+    
     // 확대 축소
     void ProcessMouseScroll(float yoffset) {
         Zoom -= (float)yoffset;
