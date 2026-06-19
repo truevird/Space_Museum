@@ -420,7 +420,7 @@ SmallExhibit::SmallExhibit(Mesh& cMesh, unsigned int iTex, unsigned int oTex)
     : cubeMesh(&cMesh), innerTex(iTex), outerTex(oTex) {
 }
 
-//유리벽
+//
 GlassWall::GlassWall(Mesh& cMesh, const glm::vec3& colorIn, float alphaIn)
     : cubeMesh(&cMesh), color(colorIn), alpha(alphaIn) {}
 
@@ -465,18 +465,6 @@ void SmallExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     shader.setMat4("model", model);
     cubeMesh->draw();
 
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(-2.4f, -0.75f, -1.5f));
-    model = glm::scale(model, glm::vec3(0.2f, 1.0f, 1.5f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(-2.4f, -0.75f, 1.5f));
-    model = glm::scale(model, glm::vec3(0.2f, 1.0f, 1.5f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-
     // 오른쪽 벽 (상단 + 하단)
     model = parentModel;
     model = glm::translate(model, glm::vec3(2.4f, 0.9f, 0.0f));
@@ -484,23 +472,10 @@ void SmallExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     shader.setMat4("model", model);
     cubeMesh->draw();
 
-
     // 앞쪽 벽 (상단 + 하단 양쪽)
     model = parentModel;
     model = glm::translate(model, glm::vec3(0.0f, 0.9f, 2.15f));
     model = glm::scale(model, glm::vec3(4.0f, 0.7f, 0.2f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(-1.25f, -0.75f, 2.15f));
-    model = glm::scale(model, glm::vec3(1.5f, 1.0f, 0.2f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(1.25f, -0.75f, 2.15f));
-    model = glm::scale(model, glm::vec3(1.5f, 1.0f, 0.2f));
     shader.setMat4("model", model);
     cubeMesh->draw();
 
@@ -511,18 +486,6 @@ void SmallExhibit::draw(Shader& shader, glm::mat4 parentModel) {
     shader.setMat4("model", model);
     cubeMesh->draw();
 
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(-1.25f, -0.75f, -2.15f));
-    model = glm::scale(model, glm::vec3(1.5f, 1.0f, 0.2f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-
-    model = parentModel;
-    model = glm::translate(model, glm::vec3(1.25f, -0.75f, -2.15f));
-    model = glm::scale(model, glm::vec3(1.5f, 1.0f, 0.2f));
-    shader.setMat4("model", model);
-    cubeMesh->draw();
-    
     //4개의 기둥
     model = parentModel;
     model = glm::translate(model, glm::vec3(2.25f, 0.055f, 2.0f));
@@ -1007,5 +970,71 @@ void Info::draw(Shader& shader, glm::mat4 parentModel) {
    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
    shader.setMat4("model", model);
    floorMesh->draw();
+
+}
+
+// =========================================================================
+// Barrier 구현 
+// =========================================================================
+Barrier::Barrier(Mesh& cyMesh, Mesh& spMesh, unsigned int baTex)
+    : cylinderMesh(&cyMesh), sphereMesh(&spMesh), baseTex(baTex) {
+}
+
+void Barrier::draw(Shader& shader, glm::mat4 parentModel) {
+    glm::mat4 model;
+    glBindTexture(GL_TEXTURE_2D, baseTex);
+
+    model = parentModel;
+    
+    model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.2f, 0.10f, 1.2f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.2f, 5.0f, 0.2f));
+    shader.setMat4("model", model);
+    cylinderMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+    shader.setMat4("model", model);
+    sphereMesh->draw();
+}
+Stand ::Stand(Mesh& cMesh,Info& ifMesh, unsigned int bTex)
+    : cubeMesh(&cMesh), infoMesh(&ifMesh), baseTex(bTex) {
+}
+void Stand::draw(Shader& shader, glm::mat4 parentModel) {
+    glm::mat4 model;
+    glBindTexture(GL_TEXTURE_2D, baseTex);
+
+    model = parentModel;
+    
+    model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(2.0f, 0.3f, 2.0f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, -3.8f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.0f, 4.0f, 1.0f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    model = parentModel;
+    model = glm::rotate(model, glm::radians(30.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -1.5f, 1.0f));
+    model = glm::scale(model, glm::vec3(3.0f, 0.5f, 2.0f));
+    shader.setMat4("model", model);
+    cubeMesh->draw();
+
+    model = parentModel;
+    model = glm::translate(model, glm::vec3(0.0f, -1.6f, 0.3f));
+    model = glm::scale(model, glm::vec3(0.55f, 0.55f, 0.55f));
+    model = glm::rotate(model, glm::radians(-60.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    shader.setMat4("model", model);
+    infoMesh->draw(shader, model);
 
 }

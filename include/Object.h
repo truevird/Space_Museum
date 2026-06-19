@@ -166,4 +166,24 @@ struct Info {
     void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
 };
 
+struct Barrier {
+    Mesh* cylinderMesh;
+    Mesh* sphereMesh;
+    unsigned int baseTex;
+
+    Barrier(Mesh& cyMesh, Mesh& spMesh, unsigned int baTex);
+
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
+
+struct Stand {
+    Mesh* cubeMesh;
+    Info* infoMesh;
+    unsigned int baseTex;
+
+    Stand(Mesh& cMesh,Info& ifMesh, unsigned int bTex);
+
+    void draw(Shader& shader, glm::mat4 parentModel = glm::mat4(1.0f));
+};
+
 #endif

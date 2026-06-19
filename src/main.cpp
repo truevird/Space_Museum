@@ -72,21 +72,78 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 // 개별 키에 대한 이동 시도 함수
 void tryMoveCamera(GLFWwindow* window, int key, int direction) {
     if (glfwGetKey(window, key) == GLFW_PRESS) {
-        // 1. 다음 예상 위치 계산
+        // 1. 가고자 하는 완전한 다음 예상 위치 계산
         glm::vec3 nextPos = camera.GetNextPosition(direction, deltaTime);
         
-        // 2. 충돌 검사
-        bool isColliding = false;
+        // 2. 전체 3축 이동에 대해 충돌 검사
+        bool isCollidingFull = false;
         for (const auto& box : colliders) {
             if (checkCollision(nextPos, box)) {
-                isColliding = true;
+                isCollidingFull = true;
                 break;
             }
         }
         
-        // 3. 충돌하지 않을 때만 실제 위치 업데이트
-        if (!isColliding) {
+        // 3. 충돌이 전혀 없다면 한 번에 깔끔하게 이동 후 종료
+        if (!isCollidingFull) {
             camera.Position = nextPos;
+            return;
+        }
+
+        // 4. [모든 경우의 수 대응 완전 슬라이딩]
+        // 부딪혔다면 X, Y, Z축 이동 성분을 각각 쪼개서 독립적으로 갈 수 있는지 검사합니다.
+        
+        // 현재 위치와 다음 위치 사이의 축별 순수 이동량 계산
+        float moveX = nextPos.x - camera.Position.x;
+        float moveY = nextPos.y - camera.Position.y;
+        float moveZ = nextPos.z - camera.Position.z;
+
+        // 4-1. X축 단독 이동 검사 (현재 위치에서 X만 이동해봄)
+        if (moveX != 0.0f) {
+            glm::vec3 testX = glm::vec3(camera.Position.x + moveX, camera.Position.y, camera.Position.z);
+            bool collideX = false;
+            for (const auto& box : colliders) {
+                if (checkCollision(testX, box)) {
+                    collideX = true;
+                    break;
+                }
+            }
+            // X축 방향으로 벽이 없다면 X축 이동 승인!
+            if (!collideX) {
+                camera.Position.x = testX.x;
+            }
+        }
+
+        // 4-2. Y축 단독 이동 검사 (현재 위치에서 Y만 이동해봄)
+        if (moveY != 0.0f) {
+            glm::vec3 testY = glm::vec3(camera.Position.x, camera.Position.y + moveY, camera.Position.z);
+            bool collideY = false;
+            for (const auto& box : colliders) {
+                if (checkCollision(testY, box)) {
+                    collideY = true;
+                    break;
+                }
+            }
+            // Y축 방향(바닥/천장)으로 벽이 없다면 Y축 이동 승인!
+            if (!collideY) {
+                camera.Position.y = testY.y;
+            }
+        }
+
+        // 4-3. Z축 단독 이동 검사 (현재 위치에서 Z만 이동해봄)
+        if (moveZ != 0.0f) {
+            glm::vec3 testZ = glm::vec3(camera.Position.x, camera.Position.y, camera.Position.z + moveZ);
+            bool collideZ = false;
+            for (const auto& box : colliders) {
+                if (checkCollision(testZ, box)) {
+                    collideZ = true;
+                    break;
+                }
+            }
+            // Z축 방향으로 벽이 없다면 Z축 이동 승인!
+            if (!collideZ) {
+                camera.Position.z = testZ.z;
+            }
         }
     }
 }
@@ -160,13 +217,13 @@ int main() {
     unsigned int solarTex = loadTexture("textures/solarpanel.jpg");
     unsigned int earthfloorTex = loadTexture("textures/earthfloor.jpg");
     unsigned int solarsystempicTex = loadTexture("textures/SolarSystemPicture.jpg",true,true);
-    unsigned int solarsysteminfoTex = loadTexture("textures/SolarSystemInfo.jpg",true,true);
+    unsigned int solarsysteminfoTex = loadTexture("textures/SolarSystemInfo.jpg",true,false);
     unsigned int satellitepicTex = loadTexture("textures/SatellitePicture.jpg",true,true);
-    unsigned int satelliteinfoTex = loadTexture("textures/SatelliteInfo.jpg",true,true);
+    unsigned int satelliteinfoTex = loadTexture("textures/SatelliteInfo.jpg",true,false);
     unsigned int marsroverpicTex = loadTexture("textures/MarsRoverPicture.jpg",true,true);
-    unsigned int marsroverinfoTex = loadTexture("textures/MarsRoverInfo.jpg",true,true);
+    unsigned int marsroverinfoTex = loadTexture("textures/MarsRoverInfo.jpg",true,false);
     unsigned int spaceshuttlepicTex = loadTexture("textures/SpaceShuttlePicture.jpg",true,true);
-    unsigned int spaceshuttleinfoTex = loadTexture("textures/SpaceShuttleInfo.jpg",true,true);
+    unsigned int spaceshuttleinfoTex = loadTexture("textures/SpaceShuttleInfo.jpg",true,false);
 
     // 구조체 생성
     EarthMoonSystem earthSystem(sphereMesh, earthTex, moonTex);
@@ -189,6 +246,11 @@ int main() {
     Info marsroverinfo(floorMesh,marsroverinfoTex);
     Info spaceshuttlepic(floorMesh,spaceshuttlepicTex);
     Info spaceshuttleinfo(floorMesh,spaceshuttleinfoTex);
+    Barrier museumBarrier(cylinderMesh, sphereMesh, wallTex);
+    Stand solarStand(cubeMesh, solarinfo, wallTex);
+    Stand satelliteStand(cubeMesh, satelliteinfo, wallTex);
+    Stand marsroverStand(cubeMesh, marsroverinfo, wallTex);
+    Stand spaceshuttleStand(cubeMesh, spaceshuttleinfo, wallTex);
 
     // 전시장 벽면 충돌설정
     colliders.push_back({ glm::vec3(-9.5f, -5.0f, -9.5f), glm::vec3(9.5f, 5.0f, -8.5f) });
@@ -333,17 +395,10 @@ int main() {
 
         //태양계전시 사진
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(11.49f, 4.5f, -2.0f));
+        model = glm::translate(model, glm::vec3(11.49f, 4.5f, 0.0f));
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         solarpic.draw(currentShader, model);
-
-        //태양계전시 안내판
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(11.49f, 4.5f, 4.2f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        solarinfo.draw(currentShader, model);
 
         //인공위성전시 사진
         model = glm::mat4(1.0f);
@@ -352,24 +407,11 @@ int main() {
         model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         satellitepic.draw(currentShader, model);
 
-        //인공위성전시 안내판
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(6.2f, -3.5f, -10.2f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        satelliteinfo.draw(currentShader, model);
-
         //화성탐사로봇전시 사진
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 4.5f, 10.2f));
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         marsroverpic.draw(currentShader, model);
-
-        //화성탐사로복전시 안내판
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-6.2f, -3.5f, 10.2f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-        marsroverinfo.draw(currentShader, model);
 
         //우주왕복선전시 사진
         model = glm::mat4(1.0f);
@@ -378,12 +420,6 @@ int main() {
         model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         spaceshuttlepic.draw(currentShader, model);
 
-        //우주왕복선전시 안내판
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-11.49f, -3.5f, -6.2f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        spaceshuttleinfo.draw(currentShader, model);
 
         // 유리벽 (투명)
         currentShader.setBool("useLighting", false);
@@ -406,6 +442,36 @@ int main() {
         glassModel = glm::translate(glassModel, glm::vec3(12.0f, 0.0f, 0.0f));
         glassModel = glm::scale(glassModel, glm::vec3(0.15f, 15.0f, 20.0f));
         glassWall.draw(currentShader, glassModel);
+
+        // //차단봉
+        // model = glm::mat4(1.0f);
+        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        // museumBarrier.draw(currentShader, model);
+
+        // 전시대
+        model = glm::mat4(1.0f);
+        
+        model = glm::translate(model, glm::vec3(8.0f, -0.8f, 5.0f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        solarStand.draw(currentShader, model);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(6.0f, -0.8f, -7.0f));
+        satelliteStand.draw(currentShader, model);
+
+        model = glm::mat4(1.0f);
+        
+        model = glm::translate(model, glm::vec3(-6.0f, -0.8f, 7.0f));
+        model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        marsroverStand.draw(currentShader, model);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-8.0f, -0.8f, -5.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        spaceshuttleStand.draw(currentShader, model);
+        
+
+        
     };
 
     // -------------------------------------------------------------
