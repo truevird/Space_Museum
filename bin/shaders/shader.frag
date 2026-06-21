@@ -7,7 +7,7 @@ in vec2 TexCoord;
 in vec4 FragPosLightSpace;
 
 uniform sampler2D ourTexture;
-uniform sampler2D shadowMap; //그림자 깊이 맵 텍스처
+uniform sampler2D shadowMap; 
 
 #define NUM_LIGHTS 5
 uniform vec3 lightPos[NUM_LIGHTS];
@@ -29,7 +29,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 norm, vec3 lightDir) {
 
     float currentDepth = projCoords.z;
     
-    // 그림자Acne 방지를 위한 가변 바이어스 계산
+    // 가변 바이어스 계산(그림자Acne 방지)
     float bias = max(0.05 * (1.0 - dot(norm, lightDir)), 0.005);
     
     // PCF 부드러운 그림자 경계 처리

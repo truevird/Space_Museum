@@ -7,7 +7,8 @@
 #include "Object.h"
 #include <iostream>
 #include <vector>
-// 설정
+
+//화면 비
 const unsigned int SCR_WIDTH = 1600;
 const unsigned int SCR_HEIGHT = 1200;
 
@@ -17,7 +18,7 @@ struct AABB {
     glm::vec3 max;
 };
 
-// 모든 충돌 박스를 담을 리스트
+//충돌 박스 리스트
 std::vector<AABB> colliders;
 
 bool checkCollision(glm::vec3 pos, const AABB& box) {
@@ -69,13 +70,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
-// 개별 키에 대한 이동 시도 함수
+// 이동 함수
 void tryMoveCamera(GLFWwindow* window, int key, int direction) {
     if (glfwGetKey(window, key) == GLFW_PRESS) {
-        // 1. 가고자 하는 완전한 다음 예상 위치 계산
+        //다음 예상 위치 계산
         glm::vec3 nextPos = camera.GetNextPosition(direction, deltaTime);
         
-        // 2. 전체 3축 이동에 대해 충돌 검사
+        //3축 이동에 대해 충돌 검사
         bool isCollidingFull = false;
         for (const auto& box : colliders) {
             if (checkCollision(nextPos, box)) {
@@ -84,21 +85,19 @@ void tryMoveCamera(GLFWwindow* window, int key, int direction) {
             }
         }
         
-        // 3. 충돌이 전혀 없다면 한 번에 깔끔하게 이동 후 종료
+        //충돌이 없는경우 이동 후 종료
         if (!isCollidingFull) {
             camera.Position = nextPos;
             return;
         }
 
-        // 4. [모든 경우의 수 대응 완전 슬라이딩]
-        // 부딪혔다면 X, Y, Z축 이동 성분을 각각 쪼개서 독립적으로 갈 수 있는지 검사합니다.
+        //슬라이딩 검사
         
-        // 현재 위치와 다음 위치 사이의 축별 순수 이동량 계산
         float moveX = nextPos.x - camera.Position.x;
         float moveY = nextPos.y - camera.Position.y;
         float moveZ = nextPos.z - camera.Position.z;
 
-        // 4-1. X축 단독 이동 검사 (현재 위치에서 X만 이동해봄)
+        // X축 단독 이동 검사 
         if (moveX != 0.0f) {
             glm::vec3 testX = glm::vec3(camera.Position.x + moveX, camera.Position.y, camera.Position.z);
             bool collideX = false;
@@ -108,13 +107,14 @@ void tryMoveCamera(GLFWwindow* window, int key, int direction) {
                     break;
                 }
             }
-            // X축 방향으로 벽이 없다면 X축 이동 승인!
+            // X축 방향으로 벽이 없다면 X축 이동
             if (!collideX) {
                 camera.Position.x = testX.x;
             }
         }
+        
 
-        // 4-2. Y축 단독 이동 검사 (현재 위치에서 Y만 이동해봄)
+        //  Y축 단독 이동 검사 
         if (moveY != 0.0f) {
             glm::vec3 testY = glm::vec3(camera.Position.x, camera.Position.y + moveY, camera.Position.z);
             bool collideY = false;
@@ -124,13 +124,13 @@ void tryMoveCamera(GLFWwindow* window, int key, int direction) {
                     break;
                 }
             }
-            // Y축 방향(바닥/천장)으로 벽이 없다면 Y축 이동 승인!
+            // Y축 방향(바닥/천장)으로 벽이 없다면 Y축 이동
             if (!collideY) {
                 camera.Position.y = testY.y;
             }
         }
 
-        // 4-3. Z축 단독 이동 검사 (현재 위치에서 Z만 이동해봄)
+        // Z축 단독 이동 검사 
         if (moveZ != 0.0f) {
             glm::vec3 testZ = glm::vec3(camera.Position.x, camera.Position.y, camera.Position.z + moveZ);
             bool collideZ = false;
@@ -140,7 +140,7 @@ void tryMoveCamera(GLFWwindow* window, int key, int direction) {
                     break;
                 }
             }
-            // Z축 방향으로 벽이 없다면 Z축 이동 승인!
+            // Z축 방향으로 벽이 없다면 Z축 이동
             if (!collideZ) {
                 camera.Position.z = testZ.z;
             }
@@ -260,9 +260,7 @@ int main() {
     colliders.push_back({ glm::vec3(-10.0f, 5.0f, -10.0f), glm::vec3(10.0f, 6.0f, 10.0f) });
     colliders.push_back({ glm::vec3(-10.0f, -5.0f, -10.0f), glm::vec3(10.0f, -4.0f, 10.0f) });
     
-    // -------------------------------------------------------------
     // 그림자 맵 FBO (프레임버퍼 오브젝트) 및 텍스처 설정
-    // -------------------------------------------------------------
     const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048; // 해상도가 높을수록 그림자가 선명해집니다.
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
@@ -288,9 +286,7 @@ int main() {
     shaderProgram.setBool("ourTexture", 0); // 일반 오브젝트용 텍스처 샘플러는 0번 슬롯
     shaderProgram.setBool("shadowMap", 1);  // 그림자용 텍스처 샘플러는 1번 슬롯 
 
-    // -------------------------------------------------------------
-    // 중복 코드를 방지하기 위한 씬 렌더링 람다 함수 정의
-    // -------------------------------------------------------------
+    // 중복 코드를 방지하기 위한 렌더링 람다 함수 정의
     auto renderScene = [&](Shader& currentShader) {
         glm::mat4 model;
         // 전시장
@@ -315,7 +311,7 @@ int main() {
 
         // 우주왕복선
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-25.0f, -3.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(-35.0f, -3.0f, 0.0f));
         model = glm::scale(model, glm::vec3(2.0f));
         model = glm::rotate(model, glm::radians(50.0f), glm::vec3(-0.75f, 0.75f, -1.0f));
         shuttle.draw(currentShader, (float)glfwGetTime(), model);
@@ -355,7 +351,7 @@ int main() {
             satelliteMesh.draw(currentShader, (float)glfwGetTime(), satModel2);
         }
 
-        // 옆에 추가한 원기둥 위성
+        // 원기둥 인공위성
         glm::mat4 cylModel = glm::mat4(1.0f);
         cylModel = glm::translate(cylModel, glm::vec3(9.0f, 0.0f, -25.0f));
         cylModel = glm::rotate(cylModel, glm::radians(50.0f), glm::vec3(0.75f, -0.75f, 1.0f));
@@ -420,34 +416,6 @@ int main() {
         model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         spaceshuttlepic.draw(currentShader, model);
 
-
-        // 유리벽 (투명)
-        currentShader.setBool("useLighting", false);
-        glm::mat4 glassModel = glm::mat4(1.0f);
-        glassModel = glm::translate(glassModel, glm::vec3(0.0f, 0.0f, -10.8f));
-        glassModel = glm::scale(glassModel, glm::vec3(20.0f, 15.0f, 0.15f));
-        glassWall.draw(currentShader, glassModel);
-
-        glassModel = glm::mat4(1.0f);
-        glassModel = glm::translate(glassModel, glm::vec3(0.0f, 0.0f, 10.8f));
-        glassModel = glm::scale(glassModel, glm::vec3(20.0f, 15.0f, 0.15f));
-        glassWall.draw(currentShader, glassModel);
-
-        glassModel = glm::mat4(1.0f);
-        glassModel = glm::translate(glassModel, glm::vec3(-12.0f, 0.0f, 0.0f));
-        glassModel = glm::scale(glassModel, glm::vec3(0.15f, 15.0f, 20.0f));
-        glassWall.draw(currentShader, glassModel);
-
-        glassModel = glm::mat4(1.0f);
-        glassModel = glm::translate(glassModel, glm::vec3(12.0f, 0.0f, 0.0f));
-        glassModel = glm::scale(glassModel, glm::vec3(0.15f, 15.0f, 20.0f));
-        glassWall.draw(currentShader, glassModel);
-
-        // //차단봉
-        // model = glm::mat4(1.0f);
-        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        // museumBarrier.draw(currentShader, model);
-
         // 전시대
         model = glm::mat4(1.0f);
         
@@ -469,6 +437,34 @@ int main() {
         model = glm::translate(model, glm::vec3(-8.0f, -0.8f, -5.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         spaceshuttleStand.draw(currentShader, model);
+
+        // //차단봉 미관상 필요도가 낮아 생성안함
+        // model = glm::mat4(1.0f);
+        // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        // museumBarrier.draw(currentShader, model);
+
+        // 유리벽 (투명) 
+        // 유리벽은 마지막에 생성 필수
+        currentShader.setBool("useLighting", false);
+        glm::mat4 glassModel = glm::mat4(1.0f);
+        glassModel = glm::translate(glassModel, glm::vec3(0.0f, 0.0f, -10.8f));
+        glassModel = glm::scale(glassModel, glm::vec3(20.0f, 15.0f, 0.15f));
+        glassWall.draw(currentShader, glassModel);
+
+        glassModel = glm::mat4(1.0f);
+        glassModel = glm::translate(glassModel, glm::vec3(0.0f, 0.0f, 10.8f));
+        glassModel = glm::scale(glassModel, glm::vec3(20.0f, 15.0f, 0.15f));
+        glassWall.draw(currentShader, glassModel);
+
+        glassModel = glm::mat4(1.0f);
+        glassModel = glm::translate(glassModel, glm::vec3(-12.0f, 0.0f, 0.0f));
+        glassModel = glm::scale(glassModel, glm::vec3(0.15f, 15.0f, 20.0f));
+        glassWall.draw(currentShader, glassModel);
+
+        glassModel = glm::mat4(1.0f);
+        glassModel = glm::translate(glassModel, glm::vec3(12.0f, 0.0f, 0.0f));
+        glassModel = glm::scale(glassModel, glm::vec3(0.15f, 15.0f, 20.0f));
+        glassWall.draw(currentShader, glassModel);
         
 
         
@@ -484,10 +480,7 @@ int main() {
 
         processInput(window);
 
-        // -----------------------------------------------------------------
-        // PASS 1: 조명 시점에서의 깊이 정보(Depth Map) 생성
-        // -----------------------------------------------------------------
-        // lightPos[0] (0.0f, 6.0f, 0.0f)을 기준으로 박물관 내부를 위에서 내려다보는 직교 변환 설정
+        // 조명 시점에서의 깊이 정보(Depth Map) 생성
         glm::mat4 lightProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 1.0f, 50.0f);
         glm::mat4 lightView = glm::lookAt(glm::vec3(0.0f, 25.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
         glm::mat4 lightSpaceMatrix = lightProjection * lightView;
@@ -504,9 +497,7 @@ int main() {
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // -----------------------------------------------------------------
-        // PASS 2: 원래 카메라 시점에서의 최종 화면 렌더링 (그림자 반영)
-        // -----------------------------------------------------------------
+        // 원래 카메라 시점에서의 최종 화면 렌더링 (그림자 반영)
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClearColor(0.05f, 0.05f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

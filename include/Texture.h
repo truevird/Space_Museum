@@ -20,9 +20,9 @@ inline unsigned int loadTexture(const std::string& path, bool flipY = false, boo
     int width, height, nrChannels;
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data) {
-        //  픽셀 데이터 수평 반전 방식
+        //  픽셀 데이터 수평 반전 
         if (flipX && width > 1 && height > 0) {
-            const int bpp = nrChannels; // bytes per pixel
+            const int bpp = nrChannels; 
             for (int y = 0; y < height; ++y) {
                 unsigned char* row = data + (size_t)y * width * bpp;
                 for (int x = 0; x < width / 2; ++x) {

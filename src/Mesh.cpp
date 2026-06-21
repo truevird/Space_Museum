@@ -282,7 +282,7 @@ Mesh createConeMesh() {
     float height = 1.0f;
     int segments = 64;
 
-    // 꼭짓점 (tip)
+    // 꼭짓점
     vertices.push_back(0.0f); vertices.push_back(height); vertices.push_back(0.0f);
     vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     vertices.push_back(0.5f); vertices.push_back(1.0f);
@@ -340,8 +340,8 @@ Mesh createRingMesh() {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    float innerRadius = 0.8f;
-    float outerRadius = 1.2f;
+    float innerRadius = 0.8f;//내부 반지름
+    float outerRadius = 1.2f;//외부 반지름
     int segments = 128;
 
     for (int i = 0; i <= segments; i++) {

@@ -51,7 +51,7 @@ void EarthMoonSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     // 1. 지구
     glBindTexture(GL_TEXTURE_2D, earthTex);
     glm::mat4 earthModel = parentModel;
-    earthModel = glm::rotate(earthModel, time * 3.0f, glm::vec3(0.0f, 1.0f, 0.0f)); // 공전 후 자전이 분리되지 않은 경우 순서 주의
+    earthModel = glm::rotate(earthModel, time * 3.0f, glm::vec3(0.0f, 1.0f, 0.0f));    // 공전 후 자전이 분리되지 않은 경우 순서 주의
     earthModel = glm::scale(earthModel, glm::vec3(0.5f, 0.5f, 0.5f));
     shader.setMat4("model", earthModel);
     sphereMesh->draw();
@@ -59,10 +59,10 @@ void EarthMoonSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
     // 2. 달
     glBindTexture(GL_TEXTURE_2D, moonTex);
     glm::mat4 moonModel = parentModel;
-    moonModel = glm::rotate(moonModel, time * 12.0f, glm::vec3(0.0f, 1.0f, 0.0f));  // 1. 지구 중심 공전
-    moonModel = glm::translate(moonModel, glm::vec3(1.2f, 0.0f, 0.0f));           // 2. 궤도 반지름 거리
+    moonModel = glm::rotate(moonModel, time * 12.0f, glm::vec3(0.0f, 1.0f, 0.0f));     // 1. 지구 중심 공전
+    moonModel = glm::translate(moonModel, glm::vec3(1.2f, 0.0f, 0.0f));                 // 2. 궤도 반지름 거리
     moonModel = glm::rotate(moonModel, time * 12.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-    moonModel = glm::scale(moonModel, glm::vec3(0.12f, 0.12f, 0.12f));               // 3. 크기
+    moonModel = glm::scale(moonModel, glm::vec3(0.12f, 0.12f, 0.12f));                  // 3. 크기
     shader.setMat4("model", moonModel);
     sphereMesh->draw();
 }
@@ -236,7 +236,7 @@ void SolarSystem::draw(Shader& shader, float time, glm::mat4 parentModel) {
 
 
 // ==========================================
-// satellite 구현
+// satellite 구현 (큐브위성)
 // ==========================================
 satellite::satellite(Mesh&spMesh,  Mesh& anMesh, Mesh& cuMesh, Mesh& coMesh, unsigned int sbTex, unsigned int slTex, unsigned int anTex)
     : sphereMesh(&spMesh), antennaMesh(&anMesh), cubeMesh(&cuMesh), coneMesh(&coMesh), bodyTex(sbTex), solarTex(slTex), antennaTex(anTex) {
@@ -974,7 +974,7 @@ void Info::draw(Shader& shader, glm::mat4 parentModel) {
 }
 
 // =========================================================================
-// Barrier 구현 
+// 차단봉 구현 
 // =========================================================================
 Barrier::Barrier(Mesh& cyMesh, Mesh& spMesh, unsigned int baTex)
     : cylinderMesh(&cyMesh), sphereMesh(&spMesh), baseTex(baTex) {
